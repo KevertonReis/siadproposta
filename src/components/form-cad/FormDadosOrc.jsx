@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from "./css/FormDadosOrc.module.css";
+import styles from "./FormDadosOrc.module.css";
 import { useNavigate } from "react-router-dom";
 
 const FormDadosOrc = () => {
@@ -299,6 +299,30 @@ const FormDadosOrc = () => {
               ))}
             </select>
           </div>
+
+          <div className={styles.divLabel}>
+            <label className="">Quadro:</label>
+            <input
+              type="number"
+              className={styles.inputText}
+              placeholder="Quantidade"
+              value={dados.qtdeQuadro}
+              onChange={(e) => handleChange("qtdeQuadro", e.target.value)}
+              required
+            />
+          </div>
+           <div className={styles.divLabel}>
+            <label className="">Vigencia:</label>
+            <input
+              type="number"
+              className={styles.inputText}
+              placeholder="em meses"
+              value={dados.vigencia}
+              onChange={(e) => handleChange("vigencia", e.target.value)}
+              required
+            />
+          </div>
+
         </form>
       </section>
     </>

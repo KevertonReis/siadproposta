@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from "./css/FormCadCliente.module.css";
+import styles from "./FormCadCliente.module.css";
 import { useNavigate } from "react-router-dom";
 
 export default function FormCadCliente() {
