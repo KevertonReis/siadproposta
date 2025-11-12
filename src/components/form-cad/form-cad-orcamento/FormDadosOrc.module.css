@@ -1,14 +1,15 @@
 .secPrincipal {
   background-color: #242424;
   border-radius: 8px;
+  padding: 24px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+  height: 100%;
 }
 
 /* Form proposta */
-.formDadosProposta {
+.formDadosProposta,
+.formDadosOrcamento {
   width: 700px;
-  /* height: 540px; */
-  padding: 24px;
 }
 
 .divTitle {
@@ -69,6 +70,13 @@
   justify-content: space-between;
 }
 
+.selectOrcamento {
+  min-width: 380px;
+  max-width: 420px;
+  padding-left: 6px;
+  align-items: center;
+}
+
 .itemProposta input {
   min-width: 380px;
   max-width: 420px;
@@ -80,7 +88,7 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  gap: 24px;
+  margin-top: 24px;
 }
 
 .buttonBack {

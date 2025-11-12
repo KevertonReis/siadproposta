@@ -1,9 +1,9 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import FormCadCliente from "./components/form-cad/FormCadCliente";
-import FormCadProposta from "./components/form-cad/FormCadProposta";
+import FormCadCliente from "./components/form-cad/form-cad-cliente/FormCadCliente";
+import FormCadProposta from "./components/form-cad/form-cad-proposta/FormCadProposta";
 import Menu from "./components/menu/Menu";
-import FormDadosOrc from "./components/form-cad/FormDadosOrc";
+import FormDadosOrc from "./components/form-cad/form-cad-orcamento/FormDadosOrc";
 
 function App() {
   return (

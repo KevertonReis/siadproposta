@@ -63,7 +63,6 @@ const FormCadProposta = () => {
         tipoReajuste: "",
         observacoes: "",
         repLegal: "",
-        codVistoriador: "",
         nomeFantasia: "",
         codCliente: "",
       });
@@ -77,14 +76,13 @@ const FormCadProposta = () => {
   const [empresa, setEmpresa] = useState([]);
   const [tipoReajuste, setTipoReajuste] = useState([]);
   const [repLegal, setRepLegal] = useState([]);
-  const [vistoriador, setVistoriador] = useState([]);
   const [cliente, setCliente] = useState([]);
   const [objeto, setObjeto] = useState([]);
   const [assessor, setAssessor] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      const [stp, emp, tpr, rpl, vis, cli, obj, ass] = await Promise.all([
+      const [stp, emp, tpr, rpl, cli, obj, ass] = await Promise.all([
         fetch("http://localhost:3001/api/statusvistoria").then((r) => r.json()),
         fetch("http://localhost:3001/api/empresa").then((r) => r.json()),
         fetch("http://localhost:3001/api/tiporeajuste").then((r) => r.json()),
@@ -99,7 +97,6 @@ const FormCadProposta = () => {
       setEmpresa(emp);
       setTipoReajuste(tpr);
       setRepLegal(rpl);
-      setVistoriador(vis);
       setCliente(cli);
       setObjeto(obj);
       setAssessor(ass)
@@ -285,24 +282,6 @@ const FormCadProposta = () => {
             {repLegal.map((t) => (
               <option key={t.COD_REP} value={t.COD_REP}>
                 {t.NOM_REP}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Vistoriador */}
-        <div className={styles.divLabel}>
-          <label className="">Vistoriado por:</label>
-          <select
-            className={styles.select}
-            value={formData.codVistoriador}
-            onChange={(e) => handleChange("codVistoriador", e.target.value)}
-            required
-          >
-            <option value="">Selecione...</option>
-            {vistoriador.map((t) => (
-              <option key={t.COD_FUN} value={t.COD_FUN}>
-                {t.NOME_FUN}
               </option>
             ))}
           </select>

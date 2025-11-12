@@ -243,87 +243,178 @@ const FormDadosOrc = () => {
                     readOnly
                   />
                 </div>
-                <div className={styles.itemProposta}>
-                  <label className="">Vistoriado por:</label>
-                  <input
-                    type="text"
-                    className=""
-                    value={propostas.vistoriador}
-                  />
-                </div>
+
                 <div className={styles.itemProposta}>
                   <label className="">Assessor responsavel:</label>
                   <input type="text" className="" value={propostas.assessor} />
                 </div>
               </div>
             )}
+          </div>
+        </form>
 
-            <div className={styles.divButtonBack}>
-              <button
-                type="button"
-                className={styles.buttonBack}
-                onClick={() => navigate("/")}
+        
+
+        <form className={styles.formDadosOrcamento}>
+          {/* Data final vistoria  */}
+          <div className={styles.dadosProposta}>
+            <div className={styles.itemProposta}>
+              <label className="">Data de devolução da vistoria:</label>
+              <input
+                type="date"
+                className={styles.inputText}
+                placeholder=""
+                value={dados.dataProposta}
+                onChange={(e) => handleChange("dataProposta", e.target.value)}
+                required
+              />
+            </div>
+
+            {/* Vistoriador */}
+            <div className={styles.itemProposta}>
+              <label className="">Vistoriado por:</label>
+              <select
+                className={styles.selectOrcamento}
+                value={vistoriador.vistoriador}
+                onChange={(e) => handleChange("vistoriador", e.target.value)}
+                required
               >
-                Voltar
-              </button>
+                <option value="">Selecione...</option>
+                {vistoriador.map((t) => (
+                  <option key={t.COD_FUN} value={t.COD_FUN}>
+                    {t.NOME_FUN}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Quadro */}
+            <div className={styles.itemProposta}>
+              <label className="">Quadro:</label>
+              <input
+                type="number"
+                className={styles.inputText}
+                placeholder="Quantidade"
+                value={dados.qtdeQuadro}
+                onChange={(e) => handleChange("qtdeQuadro", e.target.value)}
+                required
+              />
+            </div>
+
+            {/* Vigencia */}
+            <div className={styles.itemProposta}>
+              <label className="">Vigencia:</label>
+              <input
+                type="number"
+                className={styles.inputText}
+                placeholder="em meses"
+                value={dados.vigencia}
+                onChange={(e) => handleChange("vigencia", e.target.value)}
+                required
+              />
+            </div>
+
+            {/* Valor do orcamento */}
+            <div className={styles.itemProposta}>
+              <label className="">Valor do orçamento:</label>
+              <input
+                type="currency"
+                className={styles.inputText}
+                placeholder="R$"
+                value={dados.valOrcamento}
+                onChange={(e) => handleChange("valOrcamento", e.target.value)}
+                required
+              />
+            </div>
+
+            {/* Valor apresentado */}
+            <div className={styles.itemProposta}>
+              <label className="">Valor apresentado:</label>
+              <input
+                type="number"
+                className={styles.inputText}
+                placeholder="R$"
+                value={dados.valApresentado}
+                onChange={(e) => handleChange("valApresentado", e.target.value)}
+                required
+              />
+            </div>
+
+            {/* Lucro */}
+            <div className={styles.itemProposta}>
+              <label className="">Lucro:</label>
+              <input
+                type="number"
+                className={styles.inputText}
+                placeholder="%"
+                value={dados.lucro}
+                onChange={(e) => handleChange("lucro", e.target.value)}
+                required
+              />
+            </div>
+
+            {/* Valor Vencedor */}
+            <div className={styles.itemProposta}>
+              <label className="">Valor vencedor:</label>
+              <input
+                type="number"
+                className={styles.inputText}
+                placeholder="R$"
+                value={dados.valVencedor}
+                onChange={(e) => handleChange("valVencedor", e.target.value)}
+                required
+              />
+            </div>
+
+            {/* Empresa vencedora */}
+            <div className={styles.itemProposta}>
+              <label className="">Empresa vencedora:</label>
+              <input
+                type="text"
+                className={styles.inputText}
+                placeholder="Nome da empresa"
+                value={dados.empVencedor}
+                onChange={(e) => handleChange("empVencedor", e.target.value)}
+                required
+              />
+            </div>
+
+            {/* colocaçao */}
+            <div className={styles.itemProposta}>
+              <label className="">Nossa colocação:</label>
+              <input
+                type="number"
+                className={styles.inputText}
+                placeholder=""
+                value={dados.colocacao}
+                onChange={(e) => handleChange("colocacao", e.target.value)}
+                required
+              />
+            </div>
+
+            {/* codigo no siad */}
+            <div className={styles.itemProposta}>
+              <label className="">Numero SIAD:</label>
+              <input
+                type="number"
+                className={styles.inputText}
+                placeholder=""
+                value={dados.codContrato}
+                onChange={(e) => handleChange("codContrato", e.target.value)}
+                required
+              />
             </div>
           </div>
         </form>
-        <form className={styles.formDadosProposta}>
-          {/* Data final vistoria  */}
-          <div className={styles.divLabel}>
-            <label className="">Data de devolução da vistoria:</label>
-            <input
-              type="date"
-              className={styles.inputText}
-              placeholder=""
-              value={dados.dataProposta}
-              onChange={(e) => handleChange("dataProposta", e.target.value)}
-              required
-            />
-          </div>
-
-          <div className={styles.divLabel}>
-            <label className="">Vistoriado por:</label>
-            <select
-              className={styles.select}
-              value={vistoriador.vistoriador}
-              onChange={(e) => handleChange("vistoriador", e.target.value)}
-              required
-            >
-              <option value="">Selecione...</option>
-              {vistoriador.map((t) => (
-                <option key={t.COD_FUN} value={t.COD_FUN}>
-                  {t.NOME_FUN}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className={styles.divLabel}>
-            <label className="">Quadro:</label>
-            <input
-              type="number"
-              className={styles.inputText}
-              placeholder="Quantidade"
-              value={dados.qtdeQuadro}
-              onChange={(e) => handleChange("qtdeQuadro", e.target.value)}
-              required
-            />
-          </div>
-           <div className={styles.divLabel}>
-            <label className="">Vigencia:</label>
-            <input
-              type="number"
-              className={styles.inputText}
-              placeholder="em meses"
-              value={dados.vigencia}
-              onChange={(e) => handleChange("vigencia", e.target.value)}
-              required
-            />
-          </div>
-
-        </form>
+        <div className={styles.divButtonBack}>
+          <button
+            type="button"
+            className={styles.buttonBack}
+            onClick={() => navigate("/")}
+          >
+            Voltar
+          </button>
+        </div>
       </section>
     </>
   );
