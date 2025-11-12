@@ -1,28 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import styles from "./css/Menu.module.css";
+import styles from "./Menu.module.css";
+import { menuOptions } from "./constants/menu-options";
 
 const Menu = () => {
   const navigate = useNavigate();
-
-  const menuOptions = [
-    { label: "Cadastro de cliente", path: "/cadcliente", color: "blue" },
-    {
-      label: "Cadastro inicial da proposta",
-      path: "/cadproposta",
-      color: "gray",
-    },
-    {
-      label: "Orçamento e finalização da proposta",
-      path: "/orcamento",
-      color: "gray",
-    },
-    {
-      label: "Carta de credenciamento",
-      path: "/cartacredenciamento",
-      color: "gray",
-    },
-    { label: "Cadastros diversos", path: "/cadastrosdiversos", color: "gray"},
-  ];
 
   const handleNavigate = (path) => {
     navigate(path);
