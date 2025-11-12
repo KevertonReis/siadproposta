@@ -1,0 +1,70 @@
+.divPrincipal {
+  background-color: #242424;
+  display: flex;
+  width: 580px;
+  flex-direction: column;
+  text-align: center;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.formCad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.divLabel {
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.select {
+  min-width: 265px;
+}
+
+.inputText {
+  width: 260px;
+}
+
+.divTextArea {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
+
+.inputTextArea {
+  margin-top: 8px;
+  width: 100%;
+  resize: none;
+}
+
+.buttonSave {
+  background-color: rgb(0, 128, 0);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 90px;
+  height: 36px;
+  border: none;
+}
+
+.buttonCancel {
+  background-color: rgb(191, 13, 13) ;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 90px;
+  height: 36px;
+  border: none;
+}
+
+.divButtonSaveCancel {
+  justify-content: space-around;
+  display: flex;
+  width: 260px;
+  padding: 6px;
+}
