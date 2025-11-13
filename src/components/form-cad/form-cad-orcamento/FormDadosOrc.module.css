@@ -10,10 +10,11 @@
 .formDadosProposta,
 .formDadosOrcamento {
   width: 700px;
+  margin-bottom: 8px;
 }
 
 .divTitle {
-  margin-bottom: 18px;
+  margin: 18px 0;
   text-align: center;
 }
 
@@ -45,6 +46,13 @@
   height: 40px;
   font-size: 18px;
   text-align: center;
+  appearance: initial;
+}
+
+.inputFind::-webkit-inner-spin-button,
+.inputFind::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .buttonFind,
@@ -91,14 +99,13 @@
   margin-top: 24px;
 }
 
-.buttonBack {
+.buttonBack { 
   width: 120px;
   height: 36px;
   border-radius: 6px;
 }
 
 /* form orcamento */
-
 .divLabel {
   min-width: 500px;
   display: flex;

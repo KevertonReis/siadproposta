@@ -21,7 +21,7 @@ input {
 body {
   display: flex;
   align-items: center;
-  height: 100vh;
+  padding: 28px;
 }
 
 select {

@@ -7,6 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 const port = 3001;
+const ip = '192.168.0.135';
 
 // 🔧 Configuração da conexão do banco
 const options = {
@@ -54,7 +55,7 @@ app.get("/api/teste", (req, res) => {
   });
 });
 
-// GET - TABELAS AUXILIARES, STATUS, TIPO...
+// GET - TABELAS AUXILIARES
 
 app.get("/api/tipocliente", async (req, res) => {
   try {
@@ -194,20 +195,24 @@ app.get("/api/proposta/:codigo", (req, res) => {
   Firebird.attach(options, (err, db) => {
     if (err) return res.status(500).json({ error: err.message });
 
-    db.query("SELECT * FROM CONSULTA_PROPOSTA WHERE NROPRO = ?", [codigo], (err, result) => {
-      db.detach();
-      if (err) return res.status(500).json({ error: err.message });
+    db.query(
+      "SELECT * FROM CONSULTA_PROPOSTA WHERE NROPRO = ?",
+      [codigo],
+      (err, result) => {
+        db.detach();
+        if (err) return res.status(500).json({ error: err.message });
 
-      if (!result || result.length === 0) {
-        return res.status(404).json({ message: "Proposta não encontrada" });
+        if (!result || result.length === 0) {
+          return res.status(404).json({ message: "Proposta não encontrada" });
+        }
+
+        res.json(result[0]);
       }
-
-      res.json(result[0]);
-    });
+    );
   });
 });
 
-// POST - CADASTRO DE CLIENTE
+// POST - CADASTROS
 app.post("/api/clientes", (req, res) => {
   const { cnpj, razaoSocial, status, tipoCliente, anotacoes, assessor } =
     req.body;
@@ -234,7 +239,6 @@ app.post("/api/clientes", (req, res) => {
   });
 });
 
-// POST - CADASTRO PROPOSTA
 app.post("/api/enviarproposta", (req, res) => {
   const {
     dataProposta,
@@ -285,6 +289,63 @@ app.post("/api/enviarproposta", (req, res) => {
   });
 });
 
-app.listen(port, () =>
-  console.log(`🔥 Servidor rodando em http://localhost:${port}`)
+app.post("/api/enviarorcamento", (req, res) => {
+  const {
+    nroPro,
+    dataFinal,
+    vistoriador,
+    qtdeQuadro,
+    vigencia,
+    valOrcamento,
+    cct,
+    valApresentado,
+    lucro,
+    valVencedor,
+    empVencedor,
+    colocacao,
+    codContrato,
+    observacoes,
+  } = req.body;
+
+  Firebird.attach(options, (err, db) => {
+    if (err) return res.status(500).json({ erro: "Falha na conexão" });
+
+    const sql = `INSERT INTO DADOS_ORCAMENTARIOS (NRO_PRO, DATA_FINAL_VIST, QTDE_QUADRO, VIGENCIA,
+                                                 VALOR_ORCAMENTO, CCT, VALOR_APRESENTADO, LUCRO,
+                                                 VALOR_VENCEDOR, EMP_VENCEDORA, COLOCACAO, COD_CONTRATO,
+                                                 OBSERVACOES, COD_VIST)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+    `;
+    db.query(
+      sql,
+      [
+        nroPro,
+        dataFinal,
+        vistoriador,
+        qtdeQuadro,
+        vigencia,
+        valOrcamento,
+        cct,
+        valApresentado,
+        lucro,
+        valVencedor,
+        empVencedor,
+        colocacao,
+        codContrato,
+        observacoes,
+      ],
+      (err) => {
+        db.detach();
+        if (err) {
+          console.error("Erro ao inserir:", err);
+          return res.status(500).json({ erro: "Erro ao inserir cliente" });
+        }
+        res.json({ sucesso: true });
+      }
+    );
+  });
+});
+
+app.listen(port, ip, () =>
+  console.log(`🔥 Servidor rodando em http://192.168.0.135:${port}`)
 );

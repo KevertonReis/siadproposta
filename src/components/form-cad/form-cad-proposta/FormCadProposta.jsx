@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./FormCadProposta.module.css";
+import { apiUrlCustom } from "../../constants/options";
 
 const FormCadProposta = () => {
   const [formData, setFormData] = useState({
@@ -42,10 +43,11 @@ const FormCadProposta = () => {
     });
     navigate("/");
   };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3001/api/enviarproposta", {
+      const res = await fetch(`http:${apiUrlCustom}/api/enviarproposta`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -83,14 +85,14 @@ const FormCadProposta = () => {
   useEffect(() => {
     async function fetchData() {
       const [stp, emp, tpr, rpl, cli, obj, ass] = await Promise.all([
-        fetch("http://localhost:3001/api/statusvistoria").then((r) => r.json()),
-        fetch("http://localhost:3001/api/empresa").then((r) => r.json()),
-        fetch("http://localhost:3001/api/tiporeajuste").then((r) => r.json()),
-        fetch("http://localhost:3001/api/replegal").then((r) => r.json()),
-        fetch("http://localhost:3001/api/vistoriador").then((r) => r.json()),
-        fetch("http://localhost:3001/api/clientes").then((r) => r.json()),
-        fetch("http://localhost:3001/api/objeto").then((r) => r.json()),
-        fetch("http://localhost:3001/api/assessor").then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/statusvistoria`).then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/empresa`).then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/tiporeajuste`).then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/replegal`).then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/vistoriador`).then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/clientes`).then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/objeto`).then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/assessor`).then((r) => r.json()),
       ]);
 
       setStatusProposta(stp);
@@ -108,7 +110,7 @@ const FormCadProposta = () => {
     <div className={styles.divPrincipal}>
       <h2 className={styles.titleForm}>Cadastro de proposta</h2>
 
-      <form onSubmit={handleSubmit} className={styles.formCad} id="formCad">
+      <form onSubmit={handleSubmit} className={styles.formCad} id="formCadProp">
         {/* Cliente  */}
         <div className={styles.divLabel}>
           <label className="">Cliente:</label>

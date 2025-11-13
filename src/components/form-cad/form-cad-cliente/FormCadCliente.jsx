@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "./FormCadCliente.module.css";
 import { useNavigate } from "react-router-dom";
+import { apiUrlCustom } from "../../constants/options";
 
 export default function FormCadCliente() {
   const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ export default function FormCadCliente() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3001/api/clientes", {
+      const res = await fetch(`http://${apiUrlCustom}/api/clientes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -64,9 +65,9 @@ export default function FormCadCliente() {
   useEffect(() => {
     async function fetchData() {
       const [tp, sc, ass] = await Promise.all([
-        fetch("http://localhost:3001/api/tipocliente").then((r) => r.json()),
-        fetch("http://localhost:3001/api/statuscliente").then((r) => r.json()),
-        fetch("http://localhost:3001/api/assessor").then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/tipocliente`).then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/statuscliente`).then((r) => r.json()),
+        fetch(`http://${apiUrlCustom}/api/assessor`).then((r) => r.json()),
       ]);
 
       setTipoClienteList(tp);
