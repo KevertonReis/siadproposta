@@ -1,0 +1,1 @@
+export const apiUrlCustom = '192.168.0.135:3001'

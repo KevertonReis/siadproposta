@@ -1,18 +1,20 @@
 .secPrincipal {
   background-color: #242424;
   border-radius: 8px;
+  padding: 24px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+  height: 100%;
 }
 
 /* Form proposta */
-.formDadosProposta {
+.formDadosProposta,
+.formDadosOrcamento {
   width: 700px;
-  /* height: 540px; */
-  padding: 24px;
+  margin-bottom: 8px;
 }
 
 .divTitle {
-  margin-bottom: 18px;
+  margin: 18px 0;
   text-align: center;
 }
 
@@ -44,6 +46,13 @@
   height: 40px;
   font-size: 18px;
   text-align: center;
+  appearance: initial;
+}
+
+.inputFind::-webkit-inner-spin-button,
+.inputFind::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .buttonFind,
@@ -69,6 +78,13 @@
   justify-content: space-between;
 }
 
+.selectOrcamento {
+  min-width: 380px;
+  max-width: 420px;
+  padding-left: 6px;
+  align-items: center;
+}
+
 .itemProposta input {
   min-width: 380px;
   max-width: 420px;
@@ -80,19 +96,25 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  gap: 24px;
+  margin-top: 24px;
 }
 
-.buttonBack {
+.buttonBack { 
   width: 120px;
   height: 36px;
   border-radius: 6px;
 }
 
 /* form orcamento */
-
 .divLabel {
   min-width: 500px;
   display: flex;
   justify-content: space-between;
+}
+
+.divTextArea {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
 }
