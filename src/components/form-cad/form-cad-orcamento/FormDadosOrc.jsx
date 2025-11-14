@@ -154,7 +154,9 @@ const FormDadosOrc = () => {
     <>
       <section className={styles.secPrincipal}>
         <div className={styles.buscaProposta}>
-          <label>Nº da proposta</label>
+          <div className={styles.divLabelBusca}>
+            <label>Nº da proposta</label>
+          </div>
           <div className={styles.divInputButtonBuscar}>
             <input
               className={styles.inputFind}
@@ -468,23 +470,27 @@ const FormDadosOrc = () => {
 
         <div className={styles.divButtonBack}>
           <button
-            type="submit"
+            type="button"
             className={styles.buttonBack}
             onClick={() => navigate("/")}
           >
             Voltar
           </button>
-          <button
-            type="submit"
-            className={styles.buttonBack}
-            value={propostas.nroPro}
-            onChange={(e) => {
-              handleChange("nroPro", e.target.value);
-            }}
-            onClick={handleSubmit}
-          >
-            Salvar
-          </button>
+          {propostas.nroPro === "" ? (
+            <p></p>
+          ) : (
+            <button
+              type="submit"
+              className={styles.buttonBack}
+              value={propostas.nroPro}
+              onChange={(e) => {
+                handleChange("nroPro", e.target.value);
+              }}
+              onClick={handleSubmit}
+            >
+              Salvar
+            </button>
+          )}
         </div>
       </section>
     </>
