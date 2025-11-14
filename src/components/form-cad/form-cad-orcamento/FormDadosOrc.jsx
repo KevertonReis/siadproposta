@@ -27,7 +27,7 @@ const FormDadosOrc = () => {
   const [vistoriador, setVistoriador] = useState([]);
 
   const [dados, setDados] = useState({
-    nroPro: '',
+    nroPro: "",
     dataFinal: "",
     vistoriador: "",
     qtdeQuadro: "",
@@ -42,10 +42,6 @@ const FormDadosOrc = () => {
     codContrato: "",
     observacoes: "",
   });
-
-  const handleLog = async () => {
-    console.log("clicou")
-  }
 
   useEffect(() => {
     async function fetchData() {
@@ -300,8 +296,8 @@ const FormDadosOrc = () => {
                   type="date"
                   className={styles.inputText}
                   placeholder=""
-                  value={dados.dataProposta}
-                  onChange={(e) => handleChange("dataProposta", e.target.value)}
+                  value={dados.dataFinal}
+                  onChange={(e) => handleChange("dataFinal", e.target.value)}
                   required
                 />
               </div>
@@ -359,6 +355,18 @@ const FormDadosOrc = () => {
                   placeholder="R$"
                   value={dados.valOrcamento}
                   onChange={(e) => handleChange("valOrcamento", e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className={styles.itemProposta}>
+                <label className="">Ano da CCT:</label>
+                <input
+                  type="number"
+                  className={styles.inputText}
+                  placeholder="aaaa"
+                  value={dados.cct}
+                  onChange={(e) => handleChange("cct", e.target.value)}
                   required
                 />
               </div>
@@ -442,6 +450,18 @@ const FormDadosOrc = () => {
                   required
                 />
               </div>
+
+              {/* Anotações */}
+              <div className={styles.divTextArea}>
+                <label className="">Observações:</label>
+                <textarea
+                  className={styles.inputTextArea}
+                  placeholder="Observações ou detalhes adicionais"
+                  rows="5"
+                  value={dados.observacoes}
+                  onChange={(e) => handleChange("observacoes", e.target.value)}
+                ></textarea>
+              </div>
             </div>
           </form>
         )}
@@ -454,8 +474,15 @@ const FormDadosOrc = () => {
           >
             Voltar
           </button>
-          <button type="submit" className={styles.buttonBack}
-          onClick={handleLog}>
+          <button
+            type="submit"
+            className={styles.buttonBack}
+            value={propostas.nroPro}
+            onChange={(e) => {
+              handleChange("nroPro", e.target.value);
+            }}
+            onClick={handleSubmit}
+          >
             Salvar
           </button>
         </div>

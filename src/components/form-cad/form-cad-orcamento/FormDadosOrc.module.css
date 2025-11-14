@@ -111,3 +111,10 @@
   display: flex;
   justify-content: space-between;
 }
+
+.divTextArea {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
