@@ -249,7 +249,6 @@ app.post("/api/enviarproposta", (req, res) => {
     tipoReajuste,
     observacoes,
     repLegal,
-    codVistoriador,
     nomeFantasia,
     codCliente,
   } = req.body;
@@ -259,8 +258,8 @@ app.post("/api/enviarproposta", (req, res) => {
 
     const sql = `INSERT INTO PROPOSTA_TB (DATA_PRO, STATUS, EMP_PRO, LICITACAO,
                                           PLATAFORMA, TIPO_REAJUSTE, OBSERVACOES, REP_LEGAL, 
-                                          COD_VIS, NOME_FANTASIA, COD_CLI)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?);
+                                          NOME_FANTASIA, COD_CLI)
+                 VALUES (?,?,?,?,?,?,?,?,?,?);
     `;
     db.query(
       sql,
@@ -273,7 +272,6 @@ app.post("/api/enviarproposta", (req, res) => {
         tipoReajuste,
         observacoes,
         repLegal,
-        codVistoriador,
         nomeFantasia,
         codCliente,
       ],

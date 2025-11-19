@@ -18,13 +18,10 @@ const FormDadosOrc = () => {
     tipoReajuste: "",
     observacoes: "",
     repLegal: "",
-    vistoriador: "",
     nomeFantasia: "",
     codCliente: "",
     prestadorAtual: "",
   });
-
-  const [vistoriador, setVistoriador] = useState([]);
 
   const [dados, setDados] = useState({
     nroPro: "",
@@ -42,6 +39,8 @@ const FormDadosOrc = () => {
     codContrato: "",
     observacoes: "",
   });
+
+  const [vistoriador, setVistoriador] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -89,6 +88,10 @@ const FormDadosOrc = () => {
     }
   };
 
+  // const handlelog = async () => {
+  //   console.log("encontrado", propostas.nroPro);
+  // };
+
   const handleBuscar = async () => {
     const encontrado = await Promise.all([
       fetch(`http://${apiUrlCustom}/api/proposta/${codigoBusca}`).then((r) =>
@@ -111,7 +114,6 @@ const FormDadosOrc = () => {
         tipoReajuste: encontrado[0].TIPOREAJUSTE,
         observacoes: encontrado[0].OBSERVACOES,
         repLegal: encontrado[0].REP_LEGAL,
-        vistoriador: encontrado[0].VISTORIADOPOR,
         nomeFantasia: encontrado[0].NOME_FANTASIA,
         codCliente: encontrado[0].CODCLIENTE,
         prestadorAtual: encontrado[0].PRESTADOR_ATUAL,
@@ -131,7 +133,6 @@ const FormDadosOrc = () => {
         tipoReajuste: "",
         observacoes: "",
         repLegal: "",
-        vistoriador: "",
         nomeFantasia: "",
         codCliente: "",
         prestadorAtual: "",
@@ -309,7 +310,7 @@ const FormDadosOrc = () => {
                 <label className="">Vistoriado por:</label>
                 <select
                   className={styles.selectOrcamento}
-                  value={vistoriador.vistoriador}
+                  value={dados.vistoriador}
                   onChange={(e) => handleChange("vistoriador", e.target.value)}
                   required
                 >
@@ -480,13 +481,13 @@ const FormDadosOrc = () => {
             <p></p>
           ) : (
             <button
-              type="submit"
+              type="button"
               className={styles.buttonBack}
               value={propostas.nroPro}
-              onChange={(e) => {
-                handleChange("nroPro", e.target.value);
+              onClick={() => {
+                handleChange("nroPro", propostas.nroPro);
+                handleSubmit();
               }}
-              onClick={handleSubmit}
             >
               Salvar
             </button>

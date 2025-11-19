@@ -9,7 +9,7 @@ const FormCadProposta = () => {
     statusProposta: "",
     empresa: "",
     licitacao: "",
-    assessor: '',
+    assessor: "",
     objeto: "",
     plataforma: "",
     tipoReajuste: "",
@@ -32,6 +32,7 @@ const FormCadProposta = () => {
       statusProposta: "",
       empresa: "",
       licitacao: "",
+      assessor: "",
       objeto: "",
       plataforma: "",
       tipoReajuste: "",
@@ -43,11 +44,11 @@ const FormCadProposta = () => {
     });
     navigate("/");
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http:${apiUrlCustom}/api/enviarproposta`, {
+      const res = await fetch(`http://${apiUrlCustom}/api/enviarproposta`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -60,11 +61,13 @@ const FormCadProposta = () => {
         statusProposta: "",
         empresa: "",
         licitacao: "",
+        assessor: "",
         objeto: "",
         plataforma: "",
         tipoReajuste: "",
         observacoes: "",
         repLegal: "",
+        codVistoriador: "",
         nomeFantasia: "",
         codCliente: "",
       });
@@ -89,7 +92,6 @@ const FormCadProposta = () => {
         fetch(`http://${apiUrlCustom}/api/empresa`).then((r) => r.json()),
         fetch(`http://${apiUrlCustom}/api/tiporeajuste`).then((r) => r.json()),
         fetch(`http://${apiUrlCustom}/api/replegal`).then((r) => r.json()),
-        fetch(`http://${apiUrlCustom}/api/vistoriador`).then((r) => r.json()),
         fetch(`http://${apiUrlCustom}/api/clientes`).then((r) => r.json()),
         fetch(`http://${apiUrlCustom}/api/objeto`).then((r) => r.json()),
         fetch(`http://${apiUrlCustom}/api/assessor`).then((r) => r.json()),
@@ -101,7 +103,7 @@ const FormCadProposta = () => {
       setRepLegal(rpl);
       setCliente(cli);
       setObjeto(obj);
-      setAssessor(ass)
+      setAssessor(ass);
     }
     fetchData();
   }, []);
