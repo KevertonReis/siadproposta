@@ -1,26 +1,14 @@
 import express from "express";
 import cors from "cors";
 import Firebird from "node-firebird";
+import { options } from "./dbConfig.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const port = 3001;
-const ip = '192.168.0.135';
-
-// 🔧 Configuração da conexão do banco
-const options = {
-  host: "192.168.0.142",
-  database: "e:\\sys\\sistemas\\pluri\\banco\\PROPOSTA.FDB",
-  user: "SYSDBA",
-  password: "masterkey",
-  charset: "WIN1252",
-  lc_ctype: "WIN1252",
-  pageSize: 8196,
-  retryConnectionInterval: 1000,
-  wireCrypt: false,
-};
+const ip = "0.0.0.0";
 
 // 🔹 Função helper para query
 function runQuery(sql, params = []) {
@@ -212,6 +200,29 @@ app.get("/api/proposta/:codigo", (req, res) => {
   });
 });
 
+app.get("/api/propostaedit/:codigo", (req, res) => {
+  const { codigo } = req.params;
+
+  Firebird.attach(options, (err, db) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    db.query(
+      "SELECT * FROM PROPOSTA_TB WHERE NRO_PRO = ?",
+      [codigo],
+      (err, result) => {
+        db.detach();
+        if (err) return res.status(500).json({ error: err.message });
+
+        if (!result || result.length === 0) {
+          return res.status(404).json({ message: "Proposta não encontrada" });
+        }
+
+        res.json(result[0]);
+      }
+    );
+  });
+});
+
 // POST - CADASTROS
 app.post("/api/clientes", (req, res) => {
   const { cnpj, razaoSocial, status, tipoCliente, anotacoes, assessor } =
@@ -242,46 +253,107 @@ app.post("/api/clientes", (req, res) => {
 app.post("/api/enviarproposta", (req, res) => {
   const {
     dataProposta,
-    statusVistoria,
+    statusProposta,
     empresa,
     licitacao,
     plataforma,
     tipoReajuste,
     observacoes,
     repLegal,
-    codVistoriador,
     nomeFantasia,
     codCliente,
+    objeto,
+    prestadorAtual,
+    assessor,
   } = req.body;
 
   Firebird.attach(options, (err, db) => {
     if (err) return res.status(500).json({ erro: "Falha na conexão" });
 
-    const sql = `INSERT INTO PROPOSTA_TB (DATA_PRO, STATUS, EMP_PRO, LICITACAO,
-                                          PLATAFORMA, TIPO_REAJUSTE, OBSERVACOES, REP_LEGAL, 
-                                          COD_VIS, NOME_FANTASIA, COD_CLI)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?);
+    const sql = `INSERT INTO PROPOSTA_TB (DATA_PRO, STATUS, EMP_PRO, LICITACAO, PLATAFORMA, 
+                                          TIPO_REAJUSTE, OBSERVACOES, REP_LEGAL, NOME_FANTASIA, 
+                                          COD_CLI, OBJETO, PRESTADOR_ATUAL, ASSESSOR)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
     `;
     db.query(
       sql,
       [
         dataProposta,
-        statusVistoria,
+        statusProposta,
         empresa,
         licitacao,
         plataforma,
         tipoReajuste,
         observacoes,
         repLegal,
-        codVistoriador,
         nomeFantasia,
         codCliente,
+        objeto,
+        prestadorAtual,
+        assessor,
       ],
       (err) => {
         db.detach();
         if (err) {
           console.error("Erro ao inserir:", err);
           return res.status(500).json({ erro: "Erro ao inserir cliente" });
+        }
+        res.json({ sucesso: true });
+      }
+    );
+  });
+});
+
+app.post("/api/editarproposta", (req, res) => {
+  const {
+    dataProposta,
+    statusProposta,
+    empresa,
+    licitacao,
+    plataforma,
+    tipoReajuste,
+    observacoes,
+    repLegal,
+    nomeFantasia,
+    codCliente,
+    objeto,
+    prestadorAtual,
+    assessor,
+    nroPro,
+  } = req.body;
+
+  Firebird.attach(options, (err, db) => {
+    if (err) return res.status(500).json({ erro: "Falha na conexão" });
+
+    const sql = `UPDATE PROPOSTA_TB 
+                 SET DATA_PRO = ?, STATUS = ?, EMP_PRO = ?, LICITACAO = ?, PLATAFORMA = ?, 
+                     TIPO_REAJUSTE = ?, OBSERVACOES = ?, REP_LEGAL = ?, NOME_FANTASIA = ?, 
+                     COD_CLI = ?, OBJETO = ?, PRESTADOR_ATUAL = ?, ASSESSOR = ?
+                 WHERE NRO_PRO = ?
+    `;
+    db.query(
+      sql,
+      [
+        dataProposta,
+        statusProposta,
+        empresa,
+        licitacao,
+        plataforma,
+        tipoReajuste,
+        observacoes,
+        repLegal,
+        nomeFantasia,
+        codCliente,
+        objeto,
+        prestadorAtual,
+        assessor,
+        nroPro,
+      ],
+      (err) => {
+        db.detach();
+        if (err) {
+          console.error("Erro ao inserir:", err);
+          return res.status(500).json({ erro: "Erro ao salvar proposta" });
         }
         res.json({ sucesso: true });
       }
@@ -347,5 +419,5 @@ app.post("/api/enviarorcamento", (req, res) => {
 });
 
 app.listen(port, ip, () =>
-  console.log(`🔥 Servidor rodando em http://192.168.0.135:${port}`)
+  console.log(`🔥 Servidor rodando na porta :${port}`)
 );

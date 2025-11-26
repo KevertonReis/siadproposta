@@ -1,25 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import styles from "./FormCadProposta.module.css";
-import { apiUrlCustom } from "../../constants/options";
+import { useNavigate, useLocation } from "react-router-dom";
+import styles from "./FormEditProposta.module.css";
+import { apiUrlCustom, formatarData } from "../../constants/options";
 
-const FormCadProposta = () => {
-  const [formData, setFormData] = useState({
-    dataProposta: "",
-    statusProposta: "",
-    empresa: "",
-    licitacao: "",
-    plataforma: "",
-    tipoReajuste: "",
-    observacoes: "",
-    repLegal: "",
-    codVistoriador: "",
-    nomeFantasia: "",
-    codCliente: "",
-    objeto: "",
-    prestadorAtual: "",
-    assessor: "",
-  });
+const FormEditProposta = () => {
+  const location = useLocation();
+  const initialState = location.state ?? {};
+
+  const [formData, setFormData] = useState( initialState );
+
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -49,14 +38,14 @@ const FormCadProposta = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://${apiUrlCustom}/api/enviarproposta`, {
+      const res = await fetch(`http://${apiUrlCustom}/api/editarproposta`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       if (!res.ok) throw new Error("Erro ao salvar");
-      alert("Proposta cadastrada com sucesso!");
+      alert("Edição salva!");
       setFormData({
         dataProposta: "",
         statusProposta: "",
@@ -112,9 +101,31 @@ const FormCadProposta = () => {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   if (state) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       dataProposta: formData.dataProposta,
+  //       statusProposta: formData.statusProposta,
+  //       empresa: formData.empresa,
+  //       licitacao: formData.licitacao,
+  //       plataforma: formData.plataforma,
+  //       tipoReajuste: formData.tipoReajuste,
+  //       observacoes: formData.observacoes,
+  //       repLegal: formData.repLegal,
+  //       codVistoriador: formData.codVistoriador,
+  //       nomeFantasia: formData.nomeFantasia,
+  //       codCliente: formData.codCliente,
+  //       objeto: formData.objeto,
+  //       prestadorAtual: formData.prestadorAtual,
+  //       assessor: formData.assessor,
+  //     }));
+  //   }
+  // }, [state]);
+
   return (
     <div className={styles.divPrincipal}>
-      <h2 className={styles.titleForm}>Cadastro de proposta</h2>
+      <h2 className={styles.titleForm}>Editar proposta</h2>
 
       <form onSubmit={handleSubmit} className={styles.formCad} id="formCadProp">
         {/* Cliente  */}
@@ -151,11 +162,19 @@ const FormCadProposta = () => {
         {/* Data */}
         <div className={styles.divLabel}>
           <label className="">Data da proposta:</label>
+
+          {/* <DatePicker
+            selected={formData.dataProposta}
+            onChange={(date) => setFormData(date)}
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Selecione uma data"
+            className={styles.inputText}
+          /> */}
           <input
             type="date"
             className={styles.inputText}
             placeholder=""
-            value={formData.dataProposta}
+            value={formatarData(formData.dataProposta)}
             onChange={(e) => handleChange("dataProposta", e.target.value)}
             required
           />
@@ -341,4 +360,4 @@ const FormCadProposta = () => {
   );
 };
 
-export default FormCadProposta;
+export default FormEditProposta;

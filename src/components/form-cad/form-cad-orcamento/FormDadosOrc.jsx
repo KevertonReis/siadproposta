@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "./FormDadosOrc.module.css";
 import { useNavigate } from "react-router-dom";
-import { apiUrlCustom } from "../../constants/options";
+import { apiUrlCustom, formatarData } from "../../constants/options";
 
 const FormDadosOrc = () => {
   const [codigoBusca, setCodigoBusca] = useState("");
@@ -18,13 +18,10 @@ const FormDadosOrc = () => {
     tipoReajuste: "",
     observacoes: "",
     repLegal: "",
-    vistoriador: "",
     nomeFantasia: "",
     codCliente: "",
     prestadorAtual: "",
   });
-
-  const [vistoriador, setVistoriador] = useState([]);
 
   const [dados, setDados] = useState({
     nroPro: "",
@@ -42,6 +39,8 @@ const FormDadosOrc = () => {
     codContrato: "",
     observacoes: "",
   });
+
+  const [vistoriador, setVistoriador] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -89,6 +88,10 @@ const FormDadosOrc = () => {
     }
   };
 
+  // const handlelog = async () => {
+  //   console.log("encontrado", propostas.nroPro);
+  // };
+
   const handleBuscar = async () => {
     const encontrado = await Promise.all([
       fetch(`http://${apiUrlCustom}/api/proposta/${codigoBusca}`).then((r) =>
@@ -111,7 +114,6 @@ const FormDadosOrc = () => {
         tipoReajuste: encontrado[0].TIPOREAJUSTE,
         observacoes: encontrado[0].OBSERVACOES,
         repLegal: encontrado[0].REP_LEGAL,
-        vistoriador: encontrado[0].VISTORIADOPOR,
         nomeFantasia: encontrado[0].NOME_FANTASIA,
         codCliente: encontrado[0].CODCLIENTE,
         prestadorAtual: encontrado[0].PRESTADOR_ATUAL,
@@ -131,7 +133,6 @@ const FormDadosOrc = () => {
         tipoReajuste: "",
         observacoes: "",
         repLegal: "",
-        vistoriador: "",
         nomeFantasia: "",
         codCliente: "",
         prestadorAtual: "",
@@ -150,11 +151,65 @@ const FormDadosOrc = () => {
     }
   };
 
+  const handleEdit = async () => {
+    const encontradoEdicao = await Promise.all([
+      fetch(`http://${apiUrlCustom}/api/propostaedit/${codigoBusca}`).then(
+        (r) => r.json()
+      ),
+    ]);
+
+    console.log("encontrado", encontradoEdicao);
+    let dadosEnviados = {};
+
+    if (encontradoEdicao) {
+      dadosEnviados = {
+        nroPro: encontradoEdicao[0].NRO_PRO,
+        dataProposta: encontradoEdicao[0].DATA_PRO,
+        statusProposta: encontradoEdicao[0].STATUS,
+        objeto: encontradoEdicao[0].OBJETO,
+        empresa: encontradoEdicao[0].EMP_PRO,
+        licitacao: encontradoEdicao[0].LICITACAO,
+        plataforma: encontradoEdicao[0].PLATAFORMA,
+        tipoReajuste: encontradoEdicao[0].TIPO_REAJUSTE,
+        observacoes: encontradoEdicao[0].OBSERVACOES,
+        repLegal: encontradoEdicao[0].REP_LEGAL,
+        nomeFantasia: encontradoEdicao[0].NOME_FANTASIA,
+        codCliente: encontradoEdicao[0].COD_CLI,
+        prestadorAtual: encontradoEdicao[0].PRESTADOR_ATUAL,
+        assessor: encontradoEdicao[0].ASSESSOR,
+      };
+    }
+    if (!encontradoEdicao[0].NROPRO) {
+      setPropostas({
+        nroPro: "",
+        razaoSocial: "",
+        dataProposta: "",
+        statusProposta: "",
+        objeto: "",
+        empresa: "",
+        licitacao: "",
+        plataforma: "",
+        tipoReajuste: "",
+        observacoes: "",
+        repLegal: "",
+        nomeFantasia: "",
+        codCliente: "",
+        prestadorAtual: "",
+        assessor: "",
+      });
+    }
+
+    navigate("/editproposta", { state: dadosEnviados });
+    console.log("edit: ", dadosEnviados);
+  };
+
   return (
     <>
       <section className={styles.secPrincipal}>
         <div className={styles.buscaProposta}>
-          <label>Nº da proposta</label>
+          <div className={styles.divLabelBusca}>
+            <label>Nº da proposta</label>
+          </div>
           <div className={styles.divInputButtonBuscar}>
             <input
               className={styles.inputFind}
@@ -173,7 +228,11 @@ const FormDadosOrc = () => {
             {propostas.nroPro === "" ? (
               <p></p>
             ) : (
-              <button type="button" className={styles.buttonEdit}>
+              <button
+                type="button"
+                className={styles.buttonEdit}
+                onClick={handleEdit}
+              >
                 Editar proposta
               </button>
             )}
@@ -198,7 +257,7 @@ const FormDadosOrc = () => {
                     <input
                       type="text"
                       className=""
-                      value={propostas.dataProposta}
+                      value={formatarData(propostas.dataProposta)}
                       readOnly
                     />
                   </div>
@@ -276,6 +335,7 @@ const FormDadosOrc = () => {
                       type="text"
                       className=""
                       value={propostas.assessor}
+                      readOnly
                     />
                   </div>
                 </div>
@@ -288,6 +348,9 @@ const FormDadosOrc = () => {
           <p></p>
         ) : (
           <form onSubmit={handleSubmit} className={styles.formDadosOrcamento}>
+            <div className={styles.divTitle}>
+              <h2>DADOS ORÇAMENTARIOS</h2>
+            </div>
             {/* Data final vistoria  */}
             <div className={styles.dadosProposta}>
               <div className={styles.itemProposta}>
@@ -307,7 +370,7 @@ const FormDadosOrc = () => {
                 <label className="">Vistoriado por:</label>
                 <select
                   className={styles.selectOrcamento}
-                  value={vistoriador.vistoriador}
+                  value={dados.vistoriador}
                   onChange={(e) => handleChange("vistoriador", e.target.value)}
                   required
                 >
@@ -468,23 +531,27 @@ const FormDadosOrc = () => {
 
         <div className={styles.divButtonBack}>
           <button
-            type="submit"
+            type="button"
             className={styles.buttonBack}
             onClick={() => navigate("/")}
           >
             Voltar
           </button>
-          <button
-            type="submit"
-            className={styles.buttonBack}
-            value={propostas.nroPro}
-            onChange={(e) => {
-              handleChange("nroPro", e.target.value);
-            }}
-            onClick={handleSubmit}
-          >
-            Salvar
-          </button>
+          {propostas.nroPro === "" ? (
+            <p></p>
+          ) : (
+            <button
+              type="button"
+              className={styles.buttonBack}
+              value={propostas.nroPro}
+              onClick={() => {
+                handleChange("nroPro", propostas.nroPro);
+                handleSubmit();
+              }}
+            >
+              Salvar
+            </button>
+          )}
         </div>
       </section>
     </>

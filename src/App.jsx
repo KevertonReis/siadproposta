@@ -4,6 +4,7 @@ import FormCadCliente from "./components/form-cad/form-cad-cliente/FormCadClient
 import FormCadProposta from "./components/form-cad/form-cad-proposta/FormCadProposta";
 import Menu from "./components/menu/Menu";
 import FormDadosOrc from "./components/form-cad/form-cad-orcamento/FormDadosOrc";
+import FormEditProposta from "./components/form-edit/form-edit-proposta/FormEditProposta";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/cadcliente" element={<FormCadCliente />} />
           <Route path="/cadproposta" element={<FormCadProposta />} />
           <Route path="/orcamento" element={<FormDadosOrc />} />
+          <Route path="/editproposta" element={<FormEditProposta />} />
         </Routes>
       </BrowserRouter>
     </>
