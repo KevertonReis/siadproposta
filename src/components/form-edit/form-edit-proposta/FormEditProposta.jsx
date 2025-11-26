@@ -101,28 +101,6 @@ const FormEditProposta = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   if (state) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       dataProposta: formData.dataProposta,
-  //       statusProposta: formData.statusProposta,
-  //       empresa: formData.empresa,
-  //       licitacao: formData.licitacao,
-  //       plataforma: formData.plataforma,
-  //       tipoReajuste: formData.tipoReajuste,
-  //       observacoes: formData.observacoes,
-  //       repLegal: formData.repLegal,
-  //       codVistoriador: formData.codVistoriador,
-  //       nomeFantasia: formData.nomeFantasia,
-  //       codCliente: formData.codCliente,
-  //       objeto: formData.objeto,
-  //       prestadorAtual: formData.prestadorAtual,
-  //       assessor: formData.assessor,
-  //     }));
-  //   }
-  // }, [state]);
-
   return (
     <div className={styles.divPrincipal}>
       <h2 className={styles.titleForm}>Editar proposta</h2>

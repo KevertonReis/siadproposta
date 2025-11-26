@@ -57,6 +57,7 @@ const FormDadosOrc = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const res = await fetch(`http://${apiUrlCustom}/api/enviarorcamento`, {
         method: "POST",
@@ -215,7 +216,11 @@ const FormDadosOrc = () => {
               className={styles.inputFind}
               type="number"
               value={codigoBusca}
-              onChange={(e) => setCodigoBusca(e.target.value)}
+              onChange={(e) => {
+                const v = e.target.value;
+                setCodigoBusca(v);
+                setDados((prev) => ({ ...prev, nroPro: v }));
+              }}
               onKeyDown={handleKeyDown}
             />
             <button
@@ -540,15 +545,7 @@ const FormDadosOrc = () => {
           {propostas.nroPro === "" ? (
             <p></p>
           ) : (
-            <button
-              type="button"
-              className={styles.buttonBack}
-              value={propostas.nroPro}
-              onClick={() => {
-                handleChange("nroPro", propostas.nroPro);
-                handleSubmit();
-              }}
-            >
+            <button type="submit" onClick={handleSubmit} className={styles.buttonBack}>
               Salvar
             </button>
           )}
