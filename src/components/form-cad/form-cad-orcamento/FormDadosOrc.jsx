@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "./FormDadosOrc.module.css";
 import { useNavigate } from "react-router-dom";
-import { apiUrlCustom } from "../../constants/options";
+import { apiUrlCustom, formatarData } from "../../constants/options";
 
 const FormDadosOrc = () => {
   const [codigoBusca, setCodigoBusca] = useState("");
@@ -151,6 +151,58 @@ const FormDadosOrc = () => {
     }
   };
 
+  const handleEdit = async () => {
+    const encontradoEdicao = await Promise.all([
+      fetch(`http://${apiUrlCustom}/api/propostaedit/${codigoBusca}`).then(
+        (r) => r.json()
+      ),
+    ]);
+
+    console.log("encontrado", encontradoEdicao);
+    let dadosEnviados = {};
+
+    if (encontradoEdicao) {
+      dadosEnviados = {
+        nroPro: encontradoEdicao[0].NRO_PRO,
+        dataProposta: encontradoEdicao[0].DATA_PRO,
+        statusProposta: encontradoEdicao[0].STATUS,
+        objeto: encontradoEdicao[0].OBJETO,
+        empresa: encontradoEdicao[0].EMP_PRO,
+        licitacao: encontradoEdicao[0].LICITACAO,
+        plataforma: encontradoEdicao[0].PLATAFORMA,
+        tipoReajuste: encontradoEdicao[0].TIPO_REAJUSTE,
+        observacoes: encontradoEdicao[0].OBSERVACOES,
+        repLegal: encontradoEdicao[0].REP_LEGAL,
+        nomeFantasia: encontradoEdicao[0].NOME_FANTASIA,
+        codCliente: encontradoEdicao[0].COD_CLI,
+        prestadorAtual: encontradoEdicao[0].PRESTADOR_ATUAL,
+        assessor: encontradoEdicao[0].ASSESSOR,
+      };
+    }
+    if (!encontradoEdicao[0].NROPRO) {
+      setPropostas({
+        nroPro: "",
+        razaoSocial: "",
+        dataProposta: "",
+        statusProposta: "",
+        objeto: "",
+        empresa: "",
+        licitacao: "",
+        plataforma: "",
+        tipoReajuste: "",
+        observacoes: "",
+        repLegal: "",
+        nomeFantasia: "",
+        codCliente: "",
+        prestadorAtual: "",
+        assessor: "",
+      });
+    }
+
+    navigate("/editproposta", { state: dadosEnviados });
+    console.log("edit: ", dadosEnviados);
+  };
+
   return (
     <>
       <section className={styles.secPrincipal}>
@@ -176,7 +228,11 @@ const FormDadosOrc = () => {
             {propostas.nroPro === "" ? (
               <p></p>
             ) : (
-              <button type="button" className={styles.buttonEdit}>
+              <button
+                type="button"
+                className={styles.buttonEdit}
+                onClick={handleEdit}
+              >
                 Editar proposta
               </button>
             )}
@@ -201,7 +257,7 @@ const FormDadosOrc = () => {
                     <input
                       type="text"
                       className=""
-                      value={propostas.dataProposta}
+                      value={formatarData(propostas.dataProposta)}
                       readOnly
                     />
                   </div>
@@ -279,6 +335,7 @@ const FormDadosOrc = () => {
                       type="text"
                       className=""
                       value={propostas.assessor}
+                      readOnly
                     />
                   </div>
                 </div>
@@ -291,6 +348,9 @@ const FormDadosOrc = () => {
           <p></p>
         ) : (
           <form onSubmit={handleSubmit} className={styles.formDadosOrcamento}>
+            <div className={styles.divTitle}>
+              <h2>DADOS ORÇAMENTARIOS</h2>
+            </div>
             {/* Data final vistoria  */}
             <div className={styles.dadosProposta}>
               <div className={styles.itemProposta}>
