@@ -1,32 +1,48 @@
 .divPrincipal {
-  background-color: #242424;
+  /* background-color: #242424;
   display: flex;
   width: 580px;
   flex-direction: column;
   text-align: center;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 12px; */
+  background-color: #242424;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+  height: 100%;
+}
+
+.titleForm {
+  margin-bottom: 18px;
+  text-align: center;
 }
 
 .formCad {
+  width: 700px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .divLabel {
-  width: 500px;
+  min-width: 500px;
   display: flex;
   justify-content: space-between;
 }
 
 .select {
-  min-width: 265px;
+  min-width: 380px;
+  max-width: 420px;
+  padding-left: 6px;
+  align-items: center;
 }
 
 .inputText {
-  width: 260px;
+  min-width: 380px;
+  max-width: 420px;
+  padding-left: 6px;
+  align-items: center;
 }
 
 .divTextArea {
@@ -53,7 +69,7 @@
 }
 
 .buttonCancel {
-  background-color: rgb(191, 13, 13) ;
+  background-color: rgb(191, 13, 13);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
@@ -63,8 +79,8 @@
 }
 
 .divButtonSaveCancel {
-  justify-content: space-around;
+  justify-content: flex-end;
+  gap: 10px;
   display: flex;
-  width: 260px;
   padding: 6px;
 }

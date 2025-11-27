@@ -80,7 +80,7 @@ export default function FormCadCliente() {
 
   return (
     <div className={styles.divPrincipal}>
-      <h2>
+      <h2 className={styles.titleForm}>
         Cadastro de Cliente
       </h2>
 

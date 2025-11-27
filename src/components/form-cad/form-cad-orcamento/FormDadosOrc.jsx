@@ -261,7 +261,7 @@ const FormDadosOrc = () => {
                     <label className="">Data da proposta:</label>
                     <input
                       type="text"
-                      className=""
+                      className={styles.inputText}
                       value={formatarData(propostas.dataProposta)}
                       readOnly
                     />
@@ -545,7 +545,11 @@ const FormDadosOrc = () => {
           {propostas.nroPro === "" ? (
             <p></p>
           ) : (
-            <button type="submit" onClick={handleSubmit} className={styles.buttonBack}>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className={styles.buttonBack}
+            >
               Salvar
             </button>
           )}
