@@ -537,10 +537,10 @@ const FormDadosOrc = () => {
         <div className={styles.divButtonBack}>
           <button
             type="button"
-            className={styles.buttonBack}
+            className={styles.buttonCancel}
             onClick={() => navigate("/")}
           >
-            Voltar
+            Cancelar
           </button>
           {propostas.nroPro === "" ? (
             <p></p>
@@ -548,7 +548,7 @@ const FormDadosOrc = () => {
             <button
               type="submit"
               onClick={handleSubmit}
-              className={styles.buttonBack}
+              className={styles.buttonSave}
             >
               Salvar
             </button>

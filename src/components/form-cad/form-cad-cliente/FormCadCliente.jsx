@@ -79,6 +79,7 @@ export default function FormCadCliente() {
 
 
   return (
+    <>
     <div className={styles.divPrincipal}>
       <h2 className={styles.titleForm}>
         Cadastro de Cliente
@@ -204,5 +205,6 @@ export default function FormCadCliente() {
         </div>
       </form>
     </div>
+    </>
   );
 }

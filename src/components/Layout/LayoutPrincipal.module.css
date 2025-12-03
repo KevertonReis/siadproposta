@@ -1,0 +1,12 @@
+.layout {
+  display: flex;
+  height: 100vh; /* ocupa a tela inteira */
+  width: 100%;
+}
+.content {
+  width: 100%;
+  flex: 1;
+  padding: 8px;
+  overflow-y: auto; /* conteúdo rola */
+  background: #444;
+}
