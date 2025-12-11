@@ -2,10 +2,10 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FormCadCliente from "./components/form-cad/form-cad-cliente/FormCadCliente";
 import FormCadProposta from "./components/form-cad/form-cad-proposta/FormCadProposta";
-import Menu from "./components/menu/Menu";
 import FormDadosOrc from "./components/form-cad/form-cad-orcamento/FormDadosOrc";
 import FormEditProposta from "./components/form-edit/form-edit-proposta/FormEditProposta";
 import LayoutPrincipal from "./components/Layout/LayoutPrincipal";
+import CartaCredenciamento from "./components/carta-cred/CartaCredenciamento";
 
 function App() {
   return (
@@ -18,6 +18,7 @@ function App() {
             <Route path="cadproposta" element={<FormCadProposta />} />
             <Route path="orcamento" element={<FormDadosOrc />} />
             <Route path="editproposta" element={<FormEditProposta />} />
+            <Route path="credencial" element={<CartaCredenciamento />} />
           </Route>
         </Routes>
       </BrowserRouter>

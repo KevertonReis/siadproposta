@@ -1,9 +1,13 @@
 .secPrincipal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: #242424;
   border-radius: 8px;
   padding: 24px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
-  height: 100%;
+  border: 1px solid red;
+  min-width: 500px;
 }
 
 /* Form proposta */
@@ -18,16 +22,6 @@
   text-align: center;
 }
 
-.divPrincipal {
-  min-width: 500px;
-  font-family: roboto, sans-serif;
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  align-items: center;
-  justify-content: space-around;
-}
-
 /* BUSCAR PROPOSTA */
 
 .divLabelBusca {
@@ -36,7 +30,7 @@
 }
 
 .buscaProposta {
-  width: 100%;
+  width: 700px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -100,7 +94,7 @@
 }
 
 .divButtonBack {
-  width: 100%;
+  width: 700px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;

@@ -27,7 +27,7 @@ const Menu = () => {
         Orçamento e finalização da proposta
       </button>
 
-      <button onClick={() => navigate("/carta")}>
+      <button onClick={() => navigate("/credencial")}>
         Carta de credenciamento
       </button>
 

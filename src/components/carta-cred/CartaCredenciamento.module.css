@@ -1,0 +1,60 @@
+.backdrop {
+  position: fixed;
+  margin: auto;
+  width: 360px;
+  height: 100px;
+  inset: 0;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.25s ease forwards;
+}
+
+.modal {
+  animation: scaleIn 0.25s ease forwards;
+}
+
+.buttonActions {
+  margin-top: 8px;
+  align-items: center;
+  height: 36px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.buttonConfirm,
+.buttonCancel {
+  width: 76px;
+  height: 32px;
+  border-radius: 6px;
+}
+
+.buttonConfirm {
+  background-color: rgb(0, 128, 0);
+}
+
+.buttonCancel {
+  background-color: rgb(191, 13, 13);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
