@@ -9,3 +9,9 @@ export function formatarData(dataISO) {
 
   return `${ano}-${mes}-${dia}`;
 }
+
+export function formatDateCredencial(d = new Date()) {
+    return new Intl.DateTimeFormat("pt-BR", { dateStyle: "long" }).format(
+      new Date(d)
+    );
+  }

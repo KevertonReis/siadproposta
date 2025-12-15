@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import Firebird from "node-firebird";
 import { options } from "./dbConfig.js";
+import { formatDateCredencial } from "./src/components/constants/options.js";
 import PDFDocument from "pdfkit";
 
 const app = express();
@@ -446,16 +447,13 @@ app.post("/api/enviarorcamento", (req, res) => {
 
 app.post("/api/relatorio", (req, res) => {
   // Helper para formatar data em pt-BR
-  function formatDateBR(d = new Date()) {
-    return new Intl.DateTimeFormat("pt-BR", { dateStyle: "long" }).format(
-      new Date(d)
-    );
-  }
+  
 
   const data = req.body || {};
 
   // exemplo de dados esperados (substitua pelo seu payload)
   const payload = {
+    proposta: data.proposta,
     titulo: data.titulo,
     cidade: data.cidade || "Cidade/UF",
     data: data.data,
@@ -479,6 +477,10 @@ app.post("/api/relatorio", (req, res) => {
 
   doc.pipe(res);
 
+  // nro proposta
+  doc.font("Helvetica").fontSize(6).text(payload.proposta);
+  doc.moveDown(0.5);
+
   // Cabeçalho simples (logo opcional)
   // if (logoPath) doc.image(logoPath, doc.x, doc.y, { width: 100 });
   doc
@@ -491,7 +493,7 @@ app.post("/api/relatorio", (req, res) => {
   doc
     .font("Helvetica")
     .fontSize(11)
-    .text(`${payload.cidade}, ${formatDateBR(payload.data)}`, {
+    .text(`${payload.cidade}, ${formatDateCredencial(payload.data)}`, {
       align: "right",
     });
   doc.moveDown(1);

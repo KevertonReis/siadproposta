@@ -15,6 +15,52 @@
 .modal {
   animation: scaleIn 0.25s ease forwards;
 }
+/* ============================= BUSCAR PROPOSTA PRA CREDENCIAL */
+
+.buscaProposta {
+  max-width: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+
+.inputFind::-webkit-inner-spin-button,
+.inputFind::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.divLabelBusca {
+  min-width: 320px;
+  display: flex;
+}
+
+.divInputButtonBuscar {
+  min-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.inputFind {
+  min-width: 120px;
+  height: 36px;
+  font-size: 18px;
+  text-align: center;
+  appearance: initial;
+}
+
+.buttonFind {
+  width: 120px;
+  height: 36px;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 6px;
+}
+
+/* ============================= MODAL DE CONFIRMAÇÃO */
 
 .buttonActions {
   margin-top: 8px;

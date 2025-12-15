@@ -52,6 +52,7 @@ const CartaCredenciamento = () => {
   const [codigoBusca, setCodigoBusca] = useState();
 
   const [dados, setDados] = useState({
+    proposta: "",
     titulo: "",
     cidade: "",
     data: "",
@@ -60,6 +61,8 @@ const CartaCredenciamento = () => {
     corpo: [""],
   });
 
+  const [open, setOpen] = useState(false);
+
   const handleBuscar = async () => {
     const propostaCred = await Promise.all([
       fetch(`http://${apiUrlCustom}/api/proposta/${codigoBusca}`).then((r) =>
@@ -67,18 +70,32 @@ const CartaCredenciamento = () => {
       ),
     ]);
 
+    console.log(propostaCred[0]);
+
     if (propostaCred) {
       setDados({
+        proposta: `Prop. ${propostaCred[0].NROPRO}`,
         titulo: "Carta de credenciamento",
         cidade: "São Paulo/SP",
         data: new Date(),
-        empresa: "",
+        empresa: propostaCred[0].EMPPRO,
         destinatario: `A/C ${propostaCred[0].DESCLIENTE}`,
         corpo: [
           "Prezados senhores,",
           `Credenciamos o Sr. ${propostaCred[0].ASSESSOR}, Portador da cedula de identidade CPF Nº ${propostaCred[0].CPF_VIST}`,
           ``,
         ],
+      });
+    }
+    if (!propostaCred) {
+      setDados({
+        proposta: "",
+        titulo: "",
+        cidade: "",
+        data: "",
+        empresa: "",
+        destinatario: "",
+        corpo: [""],
       });
     }
   };
@@ -95,21 +112,21 @@ const CartaCredenciamento = () => {
     window.open(url, "_blank");
   }
 
-  const [open, setOpen] = useState(false);
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       handleBuscar();
     }
   };
+
   return (
     <>
       <div>
         <div className={styles.buscaProposta}>
           <div className={styles.divLabelBusca}>
             <p>Selecionar proposta para credencial</p>
-            <label>Nº da proposta</label>
           </div>
           <div className={styles.divInputButtonBuscar}>
+            <label>Nº da proposta</label>
             <input
               className={styles.inputFind}
               type="number"
@@ -129,14 +146,14 @@ const CartaCredenciamento = () => {
             </button>
           </div>
         </div>
+        {dados.empresa && (
+          <button onClick={() => setOpen(true)}>GERAR CREDENCIAL</button>
+          
+        )}
 
-        <button
-          onClick={() => {
-            setOpen(true);
-          }}
-        >
-          GERAR CREDENCIAL{" "}
-        </button>
+        {!dados.empresa && dados.empresa === undefined && (
+          <p> Proposta não encontrada </p>
+        )}
         <ConfirmModal
           open={open}
           onClose={() => setOpen(false)}
