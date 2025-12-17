@@ -11,7 +11,20 @@ export function formatarData(dataISO) {
 }
 
 export function formatDateCredencial(d = new Date()) {
-    return new Intl.DateTimeFormat("pt-BR", { dateStyle: "long" }).format(
-      new Date(d)
-    );
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "long" }).format(
+    new Date(d)
+  );
+}
+
+export async function gerarPDF(dados) {
+    const response = await fetch(`http://${apiUrlCustom}/api/relatorio`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(dados),
+    });
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
   }
+

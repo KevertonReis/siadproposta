@@ -1,13 +1,14 @@
 .layout {
   display: flex;
-  height: 100%; /* ocupa a tela inteira */
-  width: 100%;
+  width: 100vw;
+  background:
+    linear-gradient(rgba(0,0,0,.1), rgba(0,0,0,.4)),
+    url("https://static.wixstatic.com/media/fcaa91_942807ee6c5247d69739811c2fe2833f~mv2.png/v1/fill/w_188,h_189,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/fcaa91_942807ee6c5247d69739811c2fe2833f~mv2.png%201x,%20https://static.wixstatic.com/media/fcaa91_942807ee6c5247d69739811c2fe2833f~mv2.png/v1/fill/w_376,h_378,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/fcaa91_942807ee6c5247d69739811c2fe2833f~mv2.png%202x") center / cover no-repeat;
+  background-size: cover;
 }
+
 .content {
-  min-width: 100%;
-  flex: 1 1 auto; 
-  height: 100vh;
-  padding: 8px;
-  overflow-y: auto; 
-  background: #444;
+  overflow-y: auto;
+  position: relative;
+  flex: 1;
 }

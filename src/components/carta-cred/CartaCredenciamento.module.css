@@ -1,28 +1,18 @@
-.backdrop {
-  position: fixed;
-  margin: auto;
-  width: 360px;
-  height: 100px;
-  inset: 0;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
+.contentPrincipal {
+ display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: rgba(58, 77, 85, .2);
+  padding: 24px;
   align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.25s ease forwards;
 }
-
-.modal {
-  animation: scaleIn 0.25s ease forwards;
-}
-/* ============================= BUSCAR PROPOSTA PRA CREDENCIAL */
 
 .buscaProposta {
-  max-width: 700px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
+  gap: 12px;
 }
 
 .inputFind::-webkit-inner-spin-button,
@@ -32,17 +22,19 @@
 }
 
 .divLabelBusca {
-  min-width: 320px;
   display: flex;
 }
 
 .divInputButtonBuscar {
-  min-width: 600px;
+  min-width: 500px;
+  margin: 14px 0;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 12px;
 }
+
+/* .divInputButtonBuscar label {
+  width: 120px;
+} */
 
 .inputFind {
   min-width: 120px;
@@ -60,47 +52,92 @@
   border-radius: 6px;
 }
 
-/* ============================= MODAL DE CONFIRMAÇÃO */
-
-.buttonActions {
-  margin-top: 8px;
-  align-items: center;
-  height: 36px;
+.dadosProposta {
   display: flex;
-  justify-content: space-around;
-}
-
-.buttonConfirm,
-.buttonCancel {
-  width: 76px;
-  height: 32px;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
   border-radius: 6px;
 }
 
-.buttonConfirm {
-  background-color: rgb(0, 128, 0);
+.itemProposta {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.selectOrcamento {
+  min-width: 380px;
+  max-width: 420px;
+  padding-left: 6px;
+  align-items: center;
+}
+
+.itemProposta input {
+  min-width: 380px;
+  max-width: 420px;
+  align-items: center;
+}
+
+.divButtonBack {
+  width: 700px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
 }
 
 .buttonCancel {
   background-color: rgb(191, 13, 13);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 90px;
+  height: 36px;
+  border: none;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+.buttonSave {
+  background-color: rgb(0, 128, 0);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 90px;
+  height: 36px;
+  border: none;
 }
 
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* form orcamento */
+.divLabel {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 6px auto;
+}
+
+.divTextArea {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
+
+/* ============================= BOTAO GERAR CREDENCIAL */
+
+.divButtonCredencial {
+  display: flex;
+  padding: 6px;
+}
+
+.buttonCredencial {
+  margin: auto;
+  min-width: 120px;
+  padding: 6px;
+  height: 36px;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 6px;
 }

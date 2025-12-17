@@ -1,19 +1,23 @@
 .secPrincipal {
   display: flex;
   flex-direction: column;
+  height: 100%;
+  background-color: rgba(143, 143, 143, .6);
+  padding: 16px;
   align-items: center;
-  background-color: #242424;
-  border-radius: 8px;
-  padding: 24px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
-  border: 1px solid red;
-  min-width: 500px;
 }
 
+.divOrc {
+  border: 1px solid red;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+}
+ 
 /* Form proposta */
 .formDadosProposta,
 .formDadosOrcamento {
-  width: 700px;
+  min-width: 600px;
   margin-bottom: 8px;
 }
 
@@ -25,7 +29,7 @@
 /* BUSCAR PROPOSTA */
 
 .buscaProposta {
-  width: 700px;
+  min-width: 600px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -67,7 +71,6 @@
 }
 
 .dadosProposta {
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -94,7 +97,6 @@
 }
 
 .divButtonBack {
-  width: 700px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
@@ -103,17 +105,14 @@
 
 .buttonCancel {
   background-color: rgb(191, 13, 13);
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  width: 90px;
-  height: 36px;
-  border: none;
 }
 
 .buttonSave {
   background-color: rgb(0, 128, 0);
-  border-radius: 8px;
+}
+
+.buttonSave, .buttonCancel {
+   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   width: 90px;

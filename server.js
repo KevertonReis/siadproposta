@@ -179,29 +179,6 @@ app.get("/api/objeto", async (req, res) => {
   }
 });
 
-app.get("/api/dadoscredenciamento/:codigo", (req, res) => {
-  const { codigo } = req.params;
-
-  Firebird.attach(options, (err, db) => {
-    if (err) return res.status(500).json({ error: err.message });
-
-    db.query(
-      "select RAZ_EMP, LICITACAO, NRO_PRO, TEXTO, NOME_VIST, CPF_VIST, EMP_PRO, REP_LEGAL, FUNCAO_REP, CNPJ from GERA_CARTA_CRED where CODCLI = ? ",
-      [codigo],
-      (err, result) => {
-        db.detach();
-        if (err) return res.status(500).json({ error: err.message });
-
-        if (!result || result.length === 0) {
-          return res.status(404).json({ message: "Proposta não encontrada" });
-        }
-
-        res.json(result[0]);
-      }
-    );
-  });
-});
-
 app.get("/api/proposta/:codigo", (req, res) => {
   const { codigo } = req.params;
 
@@ -455,14 +432,14 @@ app.post("/api/relatorio", (req, res) => {
   const payload = {
     proposta: data.proposta,
     titulo: data.titulo,
-    cidade: data.cidade || "Cidade/UF",
+    cidade: data.cidade ,
     data: data.data,
-    empresa: data.empresa || "Empresa Exemplo Ltda.",
-    destinatario: data.destinatario || "A/C ",
+    empresa: data.empresa,
+    destinatario: data.destinatario,
     corpo: data.corpo,
-    assinante: data.assinante || {
-      nome: "Nome do Assinante",
-      cargo: "Cargo do Assinante",
+    assinante: {
+      nome: data.repLegal,
+      cargo: data.repFunc,
     },
     
   };

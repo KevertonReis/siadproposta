@@ -1,7 +1,7 @@
 :root {
-  font-family: roboto, sans-serif;
+  font-family: maven pro, sans-serif;
   color-scheme: light dark;
-  background-color: #949494;
-  /* width: 100%; */
+  background-color: white;
+  display: flex;
+  color: rgb(0, 0, 0);
 }
-

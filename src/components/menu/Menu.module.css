@@ -1,14 +1,14 @@
 .sidebar {
-  min-width: 250px;
+  width: 280px;
   height: 100vh;
-  background: #1e1e1e;
-  color: white;
-  padding: 20px;
+  color: #3a4d55;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 15px;
   position: sticky;
   top: 0;
+  box-shadow: inset -6px 0 12px -8px  rgba(0, 0, 0, 0.9);
 }
 
 
@@ -17,15 +17,19 @@
 }
 
 .sidebar button {
-  padding: 12px;
-  background: #777;
+  padding: 12px 0px;
+  background: #3a4d55;
   border: none;
   color: white;
   border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
+  height: 40px;
+  text-align: center;
+  align-items: center;
 }
 
 .sidebar button:hover {
-  background: #999;
+  background-color: rgba(58, 77, 85, .8);
+  font-size: 14px;
 }

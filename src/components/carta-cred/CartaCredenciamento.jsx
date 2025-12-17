@@ -1,57 +1,27 @@
-import { apiUrlCustom } from "../constants/options";
-import { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import styles from "./CartaCredenciamento.module.css";
+import { gerarPDF, apiUrlCustom } from "../constants/options";
+import { useState } from "react";
 
 const CartaCredenciamento = () => {
-  function ConfirmModal({ open, onClose, onConfirm }) {
-    if (!open) return null;
-
-    return ReactDOM.createPortal(
-      <Backdrop onClose={onClose}>
-        <ModalContent onClose={onClose} onConfirm={onConfirm} />
-      </Backdrop>,
-      document.body
-    );
-  }
-
-  function Backdrop({ children, onClose }) {
-    // Fecha com ESC
-    useEffect(() => {
-      const handler = (e) => e.key === "Escape" && onClose();
-      window.addEventListener("keydown", handler);
-      return () => window.removeEventListener("keydown", handler);
-    }, []);
-
-    return (
-      <div className={styles.backdrop} onClick={onClose}>
-        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-          {children}
-        </div>
-      </div>
-    );
-  }
-
-  function ModalContent({ onClose, onConfirm }) {
-    return (
-      <div className="modal-inner">
-        <p>Tem certeza que deseja continuar?</p>
-
-        <div className={styles.buttonActions}>
-          <button className={styles.buttonCancel} onClick={onClose}>
-            Cancelar
-          </button>
-          <button className={styles.buttonConfirm} onClick={onConfirm}>
-            Confirmar
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+  const [dadosDaProposta, setDadosDaProposta] = useState({
+    dataProposta: "",
+    statusProposta: "",
+    empresa: "",
+    licitacao: "",
+    plataforma: "",
+    tipoReajuste: "",
+    observacoes: "",
+    repLegal: "",
+    codVistoriador: "",
+    nomeFantasia: "",
+    codCliente: "",
+    objeto: "",
+    prestadorAtual: "",
+    assessor: "",
+  });
   const [codigoBusca, setCodigoBusca] = useState();
 
-  const [dados, setDados] = useState({
+  const [dadosDaCredencial, setDadosDaCredencial] = useState({
     proposta: "",
     titulo: "",
     cidade: "",
@@ -61,69 +31,95 @@ const CartaCredenciamento = () => {
     corpo: [""],
   });
 
-  const [open, setOpen] = useState(false);
-
-  const handleBuscar = async () => {
-    const propostaCred = await Promise.all([
-      fetch(`http://${apiUrlCustom}/api/proposta/${codigoBusca}`).then((r) =>
-        r.json()
-      ),
-    ]);
-
-    console.log(propostaCred[0]);
-
-    if (propostaCred) {
-      setDados({
-        proposta: `Prop. ${propostaCred[0].NROPRO}`,
-        titulo: "Carta de credenciamento",
-        cidade: "São Paulo/SP",
-        data: new Date(),
-        empresa: propostaCred[0].EMPPRO,
-        destinatario: `A/C ${propostaCred[0].DESCLIENTE}`,
-        corpo: [
-          "Prezados senhores,",
-          `Credenciamos o Sr. ${propostaCred[0].ASSESSOR}, Portador da cedula de identidade CPF Nº ${propostaCred[0].CPF_VIST}`,
-          ``,
-        ],
-      });
-    }
-    if (!propostaCred) {
-      setDados({
-        proposta: "",
-        titulo: "",
-        cidade: "",
-        data: "",
-        empresa: "",
-        destinatario: "",
-        corpo: [""],
-      });
-    }
-  };
-
-  async function gerarPDF() {
-    const response = await fetch(`http://${apiUrlCustom}/api/relatorio`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dados),
-    });
-
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    window.open(url, "_blank");
-  }
-
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       handleBuscar();
     }
   };
 
+  const handleBuscar = async () => {
+    const encontrado = await Promise.all([
+      fetch(`http://${apiUrlCustom}/api/proposta/${codigoBusca}`).then((r) =>
+        r.json()
+      ),
+    ]);
+
+    console.log("encontrado", encontrado);
+
+    if (encontrado) {
+      setDadosDaProposta({
+        nroPro: encontrado[0].NROPRO,
+        razaoSocial: encontrado[0].DESCLIENTE,
+        dataProposta: encontrado[0].DATAPRO,
+        statusProposta: encontrado[0].STATUS,
+        objeto: encontrado[0].OBJETO,
+        empresa: encontrado[0].EMPPRO,
+        licitacao: encontrado[0].LICITACAO,
+        plataforma: encontrado[0].PLATAFORMA,
+        tipoReajuste: encontrado[0].TIPOREAJUSTE,
+        observacoes: encontrado[0].OBSERVACOES,
+        repLegal: encontrado[0].REP_LEGAL,
+        nomeFantasia: encontrado[0].NOME_FANTASIA,
+        codCliente: encontrado[0].CODCLIENTE,
+        prestadorAtual: encontrado[0].PRESTADOR_ATUAL,
+        assessor: encontrado[0].ASSESSOR,
+      }),
+        setDadosDaCredencial({
+          proposta: `Prop. ${encontrado[0].NROPRO}`,
+          titulo: "Carta de credenciamento",
+          cidade: "São Paulo/SP",
+          data: new Date(),
+          empresa: encontrado[0].EMPPRO,
+          destinatario: `A/C ${encontrado[0].DESCLIENTE}`,
+          corpo: [
+            "Prezados senhores,",
+            `Credenciamos o(a) Sr(a) ${encontrado[0].NOME_VIST}, Portador da cedula de identidade CPF Nº ${encontrado[0].CPF_VIST}, a efetuar vistoria no(s) local(is) do objeto licitado, para fins de conhecimento das condições para excução dos serviços, elaboração de proposta e participação do certame licitatório.`,
+          ],
+
+          repLegal: encontrado[0].REP_LEGAL,
+          repFunc: encontrado[0].REP_FUNCAO,
+        });
+    }
+    if (!encontrado[0].NROPRO) {
+      setDadosDaProposta({
+        nroPro: "",
+        razaoSocial: "",
+        dataProposta: "",
+        statusProposta: "",
+        objeto: "",
+        empresa: "",
+        licitacao: "",
+        plataforma: "",
+        tipoReajuste: "",
+        observacoes: "",
+        repLegal: "",
+        nomeFantasia: "",
+        codCliente: "",
+        prestadorAtual: "",
+        assessor: "",
+      }),
+        setDadosDaCredencial({
+          proposta: "",
+          titulo: "",
+          cidade: "",
+          data: "",
+          empresa: "",
+          destinatario: "",
+          corpo: [""],
+        });
+    }
+  };
+
+  const handleChange = (field, value) => {
+    setDadosDaProposta((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
-    <>
-      <div>
+    <div className={styles.contentPrincipal}>
+      <div className={styles.dadosProposta}>
         <div className={styles.buscaProposta}>
           <div className={styles.divLabelBusca}>
-            <p>Selecionar proposta para credencial</p>
+            <h2>Selecionar proposta para credencial</h2>
           </div>
           <div className={styles.divInputButtonBuscar}>
             <label>Nº da proposta</label>
@@ -146,24 +142,96 @@ const CartaCredenciamento = () => {
             </button>
           </div>
         </div>
-        {dados.empresa && (
-          <button onClick={() => setOpen(true)}>GERAR CREDENCIAL</button>
-          
-        )}
+        <form className={styles.formCad} id="formCadProp">
+          {/* Cliente  */}
+          <div className={styles.divLabel}>
+            <label className="">Cliente:</label>
+            <input
+              type="text"
+              className={styles.inputText}
+              placeholder=""
+              value={dadosDaProposta.nomeFantasia}
+            />
+          </div>
 
-        {!dados.empresa && dados.empresa === undefined && (
-          <p> Proposta não encontrada </p>
-        )}
-        <ConfirmModal
-          open={open}
-          onClose={() => setOpen(false)}
-          onConfirm={() => {
-            gerarPDF();
-            setOpen(false);
-          }}
-        />
+          {/* Status  */}
+          <div className={styles.divLabel}>
+            <label className="">Status:</label>
+            <input
+              type="text"
+              className={styles.inputText}
+              placeholder=""
+              value={dadosDaProposta.statusProposta}
+              readOnly
+            />
+          </div>
+
+          {/* Empresa responsavel  */}
+          <div className={styles.divLabel}>
+            <label className="">Empresa responsável:</label>
+            <input
+              type="text"
+              className={styles.inputText}
+              placeholder=""
+              value={dadosDaProposta.empresa}
+              readOnly
+            />
+          </div>
+
+          {/* objeto */}
+          <div className={styles.divLabel}>
+            <label className="">Objeto:</label>
+            <input
+              type="text"
+              className={styles.inputText}
+              placeholder=""
+              value={dadosDaProposta.objeto}
+              readOnly
+            />
+          </div>
+
+          {/* Licitação */}
+          <div className={styles.divLabel}>
+            <label className="">Licitação:</label>
+            <input
+              type="text"
+              className={styles.inputText}
+              placeholder=""
+              value={dadosDaProposta.licitacao}
+              onChange={(e) => handleChange("licitacao", e.target.value)}
+              readOnly
+            />
+          </div>
+
+          {/* Representante legal */}
+          <div className={styles.divLabel}>
+            <label className="">Representante legal:</label>
+            <input
+              type="text"
+              className={styles.inputText}
+              placeholder=""
+              value={dadosDaProposta.repLegal}
+              readOnly
+            />
+          </div>
+        </form>
+
+        <div className={styles.divButtonCredencial}>
+          {dadosDaProposta.empresa && (
+            <button
+              className={styles.buttonCredencial}
+              onClick={() => gerarPDF(dadosDaCredencial)}
+            >
+              GERAR CREDENCIAL
+            </button>
+          )}
+          {!dadosDaProposta.empresa &&
+            dadosDaProposta.empresa === undefined && (
+              <p> Proposta não encontrada! </p>
+            )}
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

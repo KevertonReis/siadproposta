@@ -4,14 +4,12 @@ import Menu from "../menu/Menu";
 
 const LayoutPrincipal = () => {
   return (
-    <>
-      <div className={styles.layout}>
-        <Menu />
-        <main className={styles.content}>
-          <Outlet />
-        </main>
-      </div>
-    </>
+    <div className={styles.layout}>
+      <Menu />
+      <main className={styles.content}>
+        <Outlet />
+      </main>
+    </div>
   );
 };
 
