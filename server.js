@@ -252,6 +252,32 @@ app.post("/api/clientes", (req, res) => {
   });
 });
 
+app.post("/api/cadastroramo", (req, res) => {
+  const { descRamo } =
+    req.body;
+
+  Firebird.attach(options, (err, db) => {
+    if (err) return res.status(500).json({ erro: "Falha na conexão" });
+
+    const sql = `
+      INSERT INTO RAMO_ATIVIDADE (DES_ATIV)
+      VALUES (?)
+    `;
+    db.query(
+      sql,
+      [descRamo],
+      (err) => {
+        db.detach();
+        if (err) {
+          console.error("Erro ao inserir:", err);
+          return res.status(500).json({ erro: "Erro ao inserir cliente" });
+        }
+        res.json({ sucesso: true });
+      }
+    );
+  });
+});
+
 app.post("/api/enviarproposta", (req, res) => {
   const {
     dataProposta,

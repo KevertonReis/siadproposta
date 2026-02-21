@@ -12,5 +12,5 @@ export const menuOptions = [
     label: "Carta de credenciamento",
     path: "/cartacredenciamento",
   },
-  { label: "Cadastros diversos", path: "/cadastrosdiversos" },
+  { label: "Cadastros diversos", path: "/diversos" },
 ];
