@@ -5,6 +5,7 @@
   background-color: rgba(58, 77, 85, .2);
   padding: 24px;
   align-items: center;
+  flex: 1;
 }
 
 .titleForm {

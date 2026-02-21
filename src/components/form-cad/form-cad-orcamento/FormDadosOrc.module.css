@@ -5,6 +5,7 @@
   background-color: rgba(143, 143, 143, .6);
   padding: 16px;
   align-items: center;
+  flex: 1;
 }
 
 .divOrc {

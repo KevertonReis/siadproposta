@@ -1,9 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./Menu.module.css";
+
 // import { menuOptions } from "./constants/menu-options";
 
 const Menu = () => {
   const navigate = useNavigate();
+
+  console.log;
 
   return (
     <>

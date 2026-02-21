@@ -6,6 +6,7 @@ const LayoutPrincipal = () => {
   return (
     <div className={styles.layout}>
       <Menu />
+
       <main className={styles.content}>
         <Outlet />
       </main>
