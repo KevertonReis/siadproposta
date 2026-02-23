@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./FormCadProposta.module.css";
 import { apiUrlCustom } from "../../constants/options";
 
 const FormCadProposta = () => {
@@ -113,15 +112,15 @@ const FormCadProposta = () => {
   }, []);
 
   return (
-    <div className={styles.divPrincipal}>
-      <h2 className={styles.titleForm}>Cadastro de proposta</h2>
+    <div className="divPrincipal">
+      <h2 className="titleForm">Cadastro de proposta</h2>
 
-      <form onSubmit={handleSubmit} className={styles.formCad} id="formCadProp">
+      <form onSubmit={handleSubmit} className="formCad" id="formCadProp">
         {/* Cliente  */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Cliente:</label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.codCliente}
             onChange={(e) => handleChange("codCliente", e.target.value)}
             required
@@ -136,11 +135,11 @@ const FormCadProposta = () => {
         </div>
 
         {/* Nome fantasia */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Nome fantasia:</label>
           <input
             type="text"
-            className={styles.inputText}
+            className="inputText"
             placeholder=""
             value={formData.nomeFantasia}
             onChange={(e) => handleChange("nomeFantasia", e.target.value)}
@@ -149,11 +148,11 @@ const FormCadProposta = () => {
         </div>
 
         {/* Data */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Data da proposta:</label>
           <input
             type="date"
-            className={styles.inputText}
+            className="inputText"
             placeholder=""
             value={formData.dataProposta}
             onChange={(e) => handleChange("dataProposta", e.target.value)}
@@ -162,10 +161,10 @@ const FormCadProposta = () => {
         </div>
 
         {/* Status  */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Status:</label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.statusProposta}
             onChange={(e) => handleChange("statusProposta", e.target.value)}
             required
@@ -180,10 +179,10 @@ const FormCadProposta = () => {
         </div>
 
         {/* Empresa responsavel  */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Empresa responsável:</label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.empresa}
             onChange={(e) => handleChange("empresa", e.target.value)}
             required
@@ -198,10 +197,10 @@ const FormCadProposta = () => {
         </div>
 
         {/* objeto */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Objeto:</label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.objeto}
             onChange={(e) => handleChange("objeto", e.target.value)}
             required
@@ -216,11 +215,11 @@ const FormCadProposta = () => {
         </div>
 
         {/* Licitação */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Licitação:</label>
           <input
             type="text"
-            className={styles.inputText}
+            className="inputText"
             placeholder=""
             value={formData.licitacao}
             onChange={(e) => handleChange("licitacao", e.target.value)}
@@ -229,11 +228,11 @@ const FormCadProposta = () => {
         </div>
 
         {/* Plataforma */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Plataforma:</label>
           <input
             type="text"
-            className={styles.inputText}
+            className="inputText"
             placeholder=""
             value={formData.plataforma}
             onChange={(e) => handleChange("plataforma", e.target.value)}
@@ -243,11 +242,11 @@ const FormCadProposta = () => {
 
         {/* Empresa atual */}
 
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Prestador atual:</label>
           <input
             type="text"
-            className={styles.inputText}
+            className="inputText"
             placeholder=""
             value={formData.prestadorAtual}
             onChange={(e) => handleChange("prestadorAtual", e.target.value)}
@@ -256,10 +255,10 @@ const FormCadProposta = () => {
         </div>
 
         {/* Tipo de reajuste  */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Tipo de reajuste:</label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.tipoReajuste}
             onChange={(e) => handleChange("tipoReajuste", e.target.value)}
             required
@@ -274,10 +273,10 @@ const FormCadProposta = () => {
         </div>
 
         {/* assessor */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Assessor:</label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.assessor}
             onChange={(e) => handleChange("assessor", e.target.value)}
             required
@@ -292,10 +291,10 @@ const FormCadProposta = () => {
         </div>
 
         {/* Representante legal */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="">Representante legal:</label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.repLegal}
             onChange={(e) => handleChange("repLegal", e.target.value)}
             required
@@ -310,10 +309,10 @@ const FormCadProposta = () => {
         </div>
 
         {/* Anotações */}
-        <div className={styles.divTextArea}>
+        <div className="divTextArea">
           <label className="">Observações:</label>
           <textarea
-            className={styles.inputTextArea}
+            className="inputTextrea"
             placeholder="Observações ou detalhes adicionais"
             rows="5"
             value={formData.observacoes}
@@ -322,17 +321,17 @@ const FormCadProposta = () => {
         </div>
 
         {/* Botões salvar e cancelar */}
-        <div className={styles.divButtonSaveCancel}>
+        <div className="divButtonSaveCancel">
           <button
             type="button"
-            className={styles.buttonCancel}
+            className="buttonCancel"
             onClick={() => {
               handleClear();
             }}
           >
             Cancelar
           </button>
-          <button type="submit" className={styles.buttonSave}>
+          <button type="submit" className="buttonSave">
             Salvar
           </button>
         </div>

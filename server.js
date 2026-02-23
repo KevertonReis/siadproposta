@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import Firebird from "node-firebird";
 import { options } from "./dbConfig.js";
+import { formatDateCredencial } from "./src/components/constants/options.js";
+import PDFDocument from "pdfkit";
 
 const app = express();
 app.use(cors());
@@ -250,6 +252,32 @@ app.post("/api/clientes", (req, res) => {
   });
 });
 
+app.post("/api/cadastroramo", (req, res) => {
+  const { descRamo } =
+    req.body;
+
+  Firebird.attach(options, (err, db) => {
+    if (err) return res.status(500).json({ erro: "Falha na conexão" });
+
+    const sql = `
+      INSERT INTO RAMO_ATIVIDADE (DES_ATIV)
+      VALUES (?)
+    `;
+    db.query(
+      sql,
+      [descRamo],
+      (err) => {
+        db.detach();
+        if (err) {
+          console.error("Erro ao inserir:", err);
+          return res.status(500).json({ erro: "Erro ao inserir cliente" });
+        }
+        res.json({ sucesso: true });
+      }
+    );
+  });
+});
+
 app.post("/api/enviarproposta", (req, res) => {
   const {
     dataProposta,
@@ -417,6 +445,116 @@ app.post("/api/enviarorcamento", (req, res) => {
     );
   });
 });
+
+// ======================================== GERADOR DE RELATORIO ========================================
+
+app.post("/api/relatorio", (req, res) => {
+  // Helper para formatar data em pt-BR
+  
+
+  const data = req.body || {};
+
+  // exemplo de dados esperados (substitua pelo seu payload)
+  const payload = {
+    proposta: data.proposta,
+    titulo: data.titulo,
+    cidade: data.cidade ,
+    data: data.data,
+    empresa: data.empresa,
+    destinatario: data.destinatario,
+    corpo: data.corpo,
+    assinante: {
+      nome: data.repLegal,
+      cargo: data.repFunc,
+    },
+    
+  };
+
+  const doc = new PDFDocument({ margin: 50, size: "A4" });
+
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `inline; filename=carta-credenciamento.pdf`
+  );
+
+  doc.pipe(res);
+
+  // nro proposta
+  doc.font("Helvetica").fontSize(6).text(payload.proposta);
+  doc.moveDown(0.5);
+
+  // Cabeçalho simples (logo opcional)
+  // if (logoPath) doc.image(logoPath, doc.x, doc.y, { width: 100 });
+  doc
+    .font("Helvetica-Bold")
+    .fontSize(16)
+    .text(payload.titulo, { align: "center" });
+  doc.moveDown(1);
+
+  // Cidade e data
+  doc
+    .font("Helvetica")
+    .fontSize(11)
+    .text(`${payload.cidade}, ${formatDateCredencial(payload.data)}`, {
+      align: "right",
+    });
+  doc.moveDown(1);
+
+  // Destinatário
+  doc.font("Helvetica-Bold").fontSize(12).text(payload.destinatario);
+  doc.moveDown(0.5);
+
+  // Corpo (array de parágrafos)
+  doc.font("Helvetica").fontSize(12);
+  payload.corpo.forEach((paragrafo) => {
+    doc.text(paragrafo, { align: "justify", paragraphGap: 6 });
+    doc.moveDown(0.5);
+  });
+
+  doc.moveDown(1);
+
+  doc.moveDown(2);
+
+  // Bloco de assinatura
+  // const signatureX = doc.x;
+  const sigWidth = 250;
+  doc.moveDown(2);
+  doc.text("Atenciosamente,", { continued: false });
+  doc.moveDown(4);
+
+  // Linha para assinatura
+  const currX = doc.x;
+  const sigY = doc.y;
+  doc
+    .moveTo(currX, sigY + 40)
+    .lineTo(currX + sigWidth, sigY + 40)
+    .stroke();
+  doc.text(payload.assinante.nome, currX, sigY + 45, {
+    width: sigWidth,
+    align: "left",
+  });
+  doc.text(payload.assinante.cargo, currX, sigY + 60, {
+    width: sigWidth,
+    align: "left",
+  });
+
+  // Rodapé opcional
+  doc.fontSize(9).fillColor("gray");
+  doc.text(
+    `Documento gerado por ${payload.empresa}`,
+    doc.page.margins.left,
+    doc.page.height - doc.page.margins.bottom - 30,
+    {
+      align: "center",
+      width: doc.page.width - doc.page.margins.left - doc.page.margins.right,
+    }
+  );
+
+  doc.end();
+});
+
+// ======================================== INICIANDO SERVER ========================================
 
 app.listen(port, ip, () =>
   console.log(`🔥 Servidor rodando na porta :${port}`)

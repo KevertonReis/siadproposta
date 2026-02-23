@@ -1,6 +1,92 @@
 :root {
-  font-family: roboto, sans-serif;
+  font-family: maven pro, sans-serif;
   color-scheme: light dark;
-  background-color: #949494;
+  background-color: white;
+  display: flex;
+  color: rgb(0, 0, 0);
 }
 
+.divPrincipal {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  background-color: rgba(58, 77, 85, .2);
+  padding: 24px;
+  align-items: center;
+}
+
+.titleForm {
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.formCad {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 600px;
+  max-width: 750px;
+  padding: 12px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+  border-radius: 6px;
+}
+
+.divLabel {
+  display: flex;
+  height: 22px;
+  justify-content: space-between;
+}
+
+.select {
+  width: 380px;
+  height: 22px;
+  padding-left: 6px;
+  align-items: center;
+}
+
+.inputText {
+  min-width: 380px;
+  max-width: 420px;
+  padding-left: 6px;
+  align-items: center;
+}
+
+.divTextArea {
+  gap: 4px;
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+}
+
+.inputTextArea {
+  margin-top: 8px;
+  resize: none;
+}
+
+.buttonSave {
+  background-color: rgb(0, 128, 0);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 90px;
+  height: 36px;
+  border: none;
+}
+
+.buttonCancel {
+  background-color: rgb(191, 13, 13);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 90px;
+  height: 36px;
+  border: none;
+}
+
+.divButtonSaveCancel {
+  justify-content: flex-end;
+  gap: 10px;
+  display: flex;
+  padding: 6px;
+}

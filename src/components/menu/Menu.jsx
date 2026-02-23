@@ -1,29 +1,38 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./Menu.module.css";
-import { menuOptions } from "./constants/menu-options";
+
+// import { menuOptions } from "./constants/menu-options";
 
 const Menu = () => {
   const navigate = useNavigate();
 
-  const handleNavigate = (path) => {
-    navigate(path);
-  };
+  console.log;
 
   return (
     <>
-      <section className={styles.menu}>
+      <aside className={styles.sidebar}>
         <h2>Menu</h2>
-        {menuOptions.map((option) => (
-          <button
-          className={styles.buttonsMenu}
-            key={option.path}
-            onClick={() => handleNavigate(option.path)}
-          >
-            {option.label}
-          </button>
-        ))}
-        
-      </section>
+
+        <button onClick={() => navigate("/cadcliente")}>
+          Cadastro de cliente
+        </button>
+
+        <button onClick={() => navigate("/cadproposta")}>
+          Cadastro inicial da proposta
+        </button>
+
+        <button onClick={() => navigate("/orcamento")}>
+          Orçamento e finalização da proposta
+        </button>
+
+        <button onClick={() => navigate("/credencial")}>
+          Carta de credenciamento
+        </button>
+
+        <button onClick={() => navigate("/diversos")}>
+          Cadastros diversos
+        </button>
+      </aside>
     </>
   );
 };
