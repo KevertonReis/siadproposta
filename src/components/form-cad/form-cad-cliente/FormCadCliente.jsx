@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import styles from "./FormCadCliente.module.css";
 import { useNavigate } from "react-router-dom";
 import { apiUrlCustom } from "../../constants/options";
 
@@ -12,7 +11,6 @@ export default function FormCadCliente() {
     assessor: "",
     anotacoes: "",
   });
-
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -77,23 +75,22 @@ export default function FormCadCliente() {
     fetchData();
   }, []);
 
-
   return (
     <>
-    <div className={styles.divPrincipal}>
-      <h2 className={styles.titleForm}>
+    <div className="divPrincipal">
+      <h2 className="titleForm">
         Cadastro de Cliente
       </h2>
 
-      <form onSubmit={handleSubmit} className={styles.formCad} id="formCad">
+      <form onSubmit={handleSubmit} className="formCad" id="formCad">
         {/* CNPJ */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             CPNJ
           </label>
           <input
             type="text"
-            className={styles.inputText}
+            className="inputText"
             placeholder="C.N.P.J"
             value={formData.cnpj}
             onChange={(e) => handleChange("cnpj", e.target.value)}
@@ -102,13 +99,13 @@ export default function FormCadCliente() {
         </div>
 
         {/* Razão Social */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Razão Social
           </label>
           <input
             type="text"
-            className={styles.inputText}
+            className="inputText"
             placeholder="Digite a razão social"
             value={formData.razaoSocial}
             onChange={(e) => handleChange("razaoSocial", e.target.value)}
@@ -117,12 +114,12 @@ export default function FormCadCliente() {
         </div>
 
         {/* Status */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Status
           </label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.status}
             onChange={(e) => handleChange("status", e.target.value)}
             required
@@ -137,12 +134,12 @@ export default function FormCadCliente() {
         </div>
 
         {/* Tipo de Cliente */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Tipo de Cliente
           </label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.tipoCliente}
             onChange={(e) => handleChange("tipoCliente", e.target.value)}
             required
@@ -157,12 +154,12 @@ export default function FormCadCliente() {
         </div>
 
         {/* Assessor */}
-        <div className={styles.divLabel}>
+        <div className="divLabel">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Assessor
           </label>
           <select
-            className={styles.select}
+            className="select"
             value={formData.assessor}
             onChange={(e) => handleChange("assessor", e.target.value)}
             required
@@ -177,12 +174,12 @@ export default function FormCadCliente() {
         </div>
 
         {/* Anotações */}
-        <div className={styles.divTextArea}>
+        <div className="divTextArea">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Anotações
           </label>
           <textarea
-            className={styles.inputTextArea}
+            className="inputTextArea"
             placeholder="Observações ou detalhes adicionais"
             rows="5"
             value={formData.anotacoes}
@@ -191,15 +188,15 @@ export default function FormCadCliente() {
         </div>
 
         {/* Botões salvar e cancelar */}
-        <div className={styles.divButtonSaveCancel}>
+        <div className="divButtonSaveCancel">
           <button
             type="button"
-            className={styles.buttonCancel}
+            className="buttonCancel"
             onClick={() => {handleClear()}}
           >
             Cancelar
           </button>
-          <button type="submit" className={styles.buttonSave}>
+          <button type="submit" className="buttonSave">
             Salvar
           </button>
         </div>
