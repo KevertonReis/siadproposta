@@ -1,0 +1,128 @@
+/* Container principal */
+.sectionPrincipal {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background:
+    linear-gradient(rgba(0,0,0,.1), rgba(0,0,0,.4)),
+    url("https://static.wixstatic.com/media/fcaa91_942807ee6c5247d69739811c2fe2833f~mv2.png/v1/fill/w_188,h_189,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/fcaa91_942807ee6c5247d69739811c2fe2833f~mv2.png%201x,%20https://static.wixstatic.com/media/fcaa91_942807ee6c5247d69739811c2fe2833f~mv2.png/v1/fill/w_376,h_378,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/fcaa91_942807ee6c5247d69739811c2fe2833f~mv2.png%202x") center / cover no-repeat;
+  background-size: cover;
+}
+
+/* Título */
+.title {
+  text-align: center;
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.login {
+  height: 500px;
+  max-width: 500px;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Formulário */
+.formLogin {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Labels */
+.labels {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  
+}
+
+.divInputs {
+  width: 300px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+/* Inputs */
+.inputEmail,
+.inputPasswd {
+  padding: 10px 12px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border 0.2s ease;
+}
+
+.inputEmail,
+.inputPasswd {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* Checkbox */
+.inputCheckbox{
+  width: 300px;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+}
+
+/* Botão */
+.buttonLogin {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #1e4ed8;
+}
+
+/* Links */
+a {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #2563eb;
+  transition: opacity 0.2s ease;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Texto auxiliar */
+p {
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.forgetPasswd {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  border: 1px solid red;
+}
