@@ -6,7 +6,7 @@ const Login = () => {
   return (
     <section className={styles.sectionPrincipal}>
       <div className={styles.login}>
-        <h1 className={styles.title}>Siad Proposta</h1>
+        <h1 className={styles.title}>LOGIN</h1>
 
         <form className={styles.formLogin} method="POST" action="/login">
           <div className={styles.divInputs}>
