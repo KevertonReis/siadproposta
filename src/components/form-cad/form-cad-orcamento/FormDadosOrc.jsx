@@ -7,7 +7,7 @@ const FormDadosOrc = () => {
   const [codigoBusca, setCodigoBusca] = useState("");
 
   const [propostas, setPropostas] = useState({
-    nroPro: "",
+    nroPro: "0",
     razaoSocial: "",
     dataProposta: "",
     statusProposta: "",
@@ -42,7 +42,7 @@ const FormDadosOrc = () => {
 
   const [vistoriador, setVistoriador] = useState([]);
 
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState();
 
   useEffect(() => {
     async function fetchData() {
@@ -103,7 +103,7 @@ const FormDadosOrc = () => {
         ),
       ]);
 
-      if (encontrado) {
+      if (encontrado[0].NROPRO) {
         setPropostas({
           nroPro: encontrado[0].NROPRO,
           razaoSocial: encontrado[0].DESCLIENTE,
@@ -141,6 +141,7 @@ const FormDadosOrc = () => {
           prestadorAtual: "",
           assessor: "",
         });
+        setVisible(false);
       }
     }
   };
@@ -205,8 +206,6 @@ const FormDadosOrc = () => {
     navigate("/editproposta", { state: dadosEnviados });
   };
 
-  console.log(visible);
-
   return (
     <>
       <section className={styles.secPrincipal}>
@@ -249,9 +248,7 @@ const FormDadosOrc = () => {
           </div>
           {/* DADOS DA PROPOSTA */}
 
-          {!visible ? (
-            <p></p>
-          ) : (
+          {visible ? (
             <section>
               <div className="dadosProposta">
                 <form className={styles.formDadosProposta}>
@@ -557,6 +554,12 @@ const FormDadosOrc = () => {
                 </form>
               </div>
             </section>
+          ) : (
+            <p className={styles.naoEncontrado}>
+              {propostas.nroPro === ""
+                ? "Proposta não encontrada, verifique o codigo!"
+                : "Digite o numero da proposta para encontra-la"}
+            </p>
           )}
 
           <div className={styles.divButtonBack}>
@@ -567,7 +570,7 @@ const FormDadosOrc = () => {
             >
               Cancelar
             </button>
-            {propostas.nroPro === "" ? (
+            {!visible ? (
               <p></p>
             ) : (
               <button

@@ -8,13 +8,17 @@ import LayoutPrincipal from "./components/Layout/LayoutPrincipal";
 import CartaCredenciamento from "./components/carta-cred/CartaCredenciamento";
 import MenuCadDiversos from "./components/form-cad/form-cad-diversos/menu-cad-diversos/MenuCadDiversos";
 import FormCadRamo from "./components/form-cad/form-cad-diversos/FormCadRamo";
+import Login from "./components/Login/Login";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LayoutPrincipal />}>
+          <Route path="/" element={<Login />}>
+              <Route index element="" />   
+          </Route>
+          <Route path="layoutprincipal" element={<LayoutPrincipal />}>
             <Route index element="" />
             <Route path="cadcliente" element={<FormCadCliente />} />
             <Route path="cadproposta" element={<FormCadProposta />} />

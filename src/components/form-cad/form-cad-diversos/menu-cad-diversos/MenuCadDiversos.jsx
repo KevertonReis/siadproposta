@@ -8,7 +8,7 @@ export default function MenuCadDiversos() {
     <>
       <div className={styles.sidebar}>
         <h2>Cadastros diversos</h2>
-        <button onClick={() => navigate("/diversos/cadramo")}>
+        <button onClick={() => navigate("/layoutprincipal/diversos/cadramo")}>
           Ramo de atividade
         </button>
       </div>
