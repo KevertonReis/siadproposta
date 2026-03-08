@@ -55,17 +55,11 @@
 .inputEmail,
 .inputPasswd {
   padding: 10px 12px;
-  border: 1px solid #000;
   border-radius: 6px;
   font-size: 14px;
   transition: border 0.2s ease;
 }
 
-.inputEmail,
-.inputPasswd {
-  outline: none;
-  border-color: #2563eb;
-}
 
 /* Checkbox */
 .inputCheckbox{
@@ -87,7 +81,7 @@
   padding: 12px;
   border: none;
   border-radius: 6px;
-  background: #2563eb;
+  background: rgba(235, 60, 37,.85);
   color: #ffffff;
   font-size: 14px;
   font-weight: 600;
@@ -96,7 +90,8 @@
 }
 
 button:hover {
-  background: #1e4ed8;
+  background: rgb(235, 60, 37);
+  font-size: 15px;
 }
 
 /* Links */

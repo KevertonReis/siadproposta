@@ -1,4 +1,4 @@
-export const apiUrlCustom = "192.168.0.135:3001";
+export const apiUrlCustom = "192.168.0.104:3001";
 
 export function formatarData(dataISO) {
   const data = new Date(dataISO);
