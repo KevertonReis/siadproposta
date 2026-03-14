@@ -3,31 +3,30 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiUrlCustom } from "../constants/options";
 import styles from "./Login.module.css";
-
+import { useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const [ user, setUser ] = useState('')
-  const [ passwd, setPasswd ] = useState('')
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const res = await axios.post(`http://${apiUrlCustom}/api/login`, {
-        user,
-        passwd
+        username,
+        password,
       });
 
-      localStorage.setItem('token', res.data.token  )
-    
-      navigate("/layoutprincipal")
-      } catch (err) {
-       const msg = err.response?.data?.error || "Erro no login";
-  alert(msg);
+      navigate("/layoutprincipal");
+    } catch (err) {
+      const msg = err.response?.data?.error || "Usuario ou senha invalidos";
+      alert(msg);
     }
-  }
+  };
+
   return (
     <section className={styles.sectionPrincipal}>
       <div className={styles.login}>
@@ -40,7 +39,7 @@ const Login = () => {
             </label>
             <div></div>
             <input
-              onChange={(e) => setUser(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               className={styles.inputEmail}
               type="email"
               id="email"
@@ -55,7 +54,7 @@ const Login = () => {
               Senha
             </label>
             <input
-              onChange={(e) => setPasswd(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className={styles.inputPasswd}
               type="password"
               id="password"
@@ -87,15 +86,6 @@ const Login = () => {
             </button>
           </div>
         </form>
-
-        <div>
-          <a href="/forgot-password">Forgot your password?</a>
-        </div>
-
-        <div className={styles.forgetPasswd}>
-          <p>Don't have account?</p>
-          <a href="/register">Criar conta</a>
-        </div>
       </div>
     </section>
   );

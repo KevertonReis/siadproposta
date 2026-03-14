@@ -1,367 +1,357 @@
-import cors from 'cors'
-import dotenv from 'dotenv'
-import express from 'express'
-import jwt from 'jsonwebtoken'
-import Firebird from 'node-firebird'
-import PDFDocument from 'pdfkit'
-import { options } from './dbConfig.js'
-import { formatDateCredencial } from './src/components/constants/options.js'
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import jwt from "jsonwebtoken";
+import Firebird from "node-firebird";
+import PDFDocument from "pdfkit";
+import { options, optionsAcesso } from "./dbConfig.js";
+import { formatDateCredencial } from "./src/components/constants/options.js";
 
-const app = express()
-app.use(cors())
-app.use(express.json())
-dotenv.config()
+const app = express();
+app.use(cors());
+app.use(express.json());
+dotenv.config();
 
-const port = 3001
-const ip = '0.0.0.0'
-
-
+const port = 3001;
+const ip = "0.0.0.0";
 
 //login
-const { USUARIO, SENHA, ACCESS_TOKEN_KEY } = process.env
 
-app.post('/api/login', (req, res) => {
-  const { user, passwd } = req.body
+app.post("/api/login", (req, res) => {
+  const { username, password } = req.body;
+  const lowerCaseUsername = (username || "").toLowerCase();
 
-  if (user !== USUARIO || passwd !== SENHA)
-    return res.status(403).json({ error: 'E-mail ou senha inválidos!' })
+  Firebird.attach(optionsAcesso, (err, db) => {
+    if (err) {
+      console.error("Erro ao conectar ao banco de dados.", err);
+      return res.status(500).send("Erro ao conectar ao banco de dados.");
+    }
+    const sql = `
+      SELECT U.NOM_USU as LOGIN, U.SENHA_USU as SENHA, U.NOM_COM as NOME
+      FROM USUARIOS U
+      WHERE LOWER(NOM_USU) = ?
+    `;
 
-  const token = jwt.sign({ user }, ACCESS_TOKEN_KEY, {
-    expiresIn: '15m'
-  })
+    db.query(sql, [lowerCaseUsername], (qerr, result) => {
+      db.detach();
+      if (qerr) {
+        console.error("Erro ao executar consulta SQL:", qerr);
+        return res.status(500).send("Erro na consulta SQL.");
+      }
 
-  res.json({ token })
-})
+      if (!result || result.length === 0) {
+        console.warn(`Usuário não encontrado: ${username}`);
+        return res.status(401).json({ message: "Usuário ou senha inválidos." });
+      }
 
-app.get("/api/validacao", (req, res) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+      const user = result[0];
 
-  if (!token) return res.status(403).json({ error: "Não autorizado" });
+      if (!user.SENHA) {
+        return res.status(200).json({ senhaEmBranco: true });
+      }
 
-  jwt.verify(token, ACCESS_TOKEN_KEY, (err, user) => {
-    if (err) return res.status(403).json({ error: "Não autorizado" });
+      if (password === user.SENHA) {
+        console.info(`Login bem-sucedido para o usuário: ${username}`);
+        const token = jwt.sign(
+          { username: user.LOGIN, nome: user.NOME },
+          process.env.SECRET_KEY,
+        );
+        res.cookie("auth_token", token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+        });
 
-    res.json({ message: "Acesso autorizado", user });
+        console.log(token)
+
+        return res.status(200).json({
+          success: true,
+          token,
+          user: { login: user.LOGIN, nome: user.NOME },
+        });
+      } else {
+        console.warn(`Senha inválida para o usuário: ${username}`);
+        return res.status(401).json({ message: "Usuário ou senha inválidos." });
+      }
+    });
   });
 });
+
+// app.get("/api/validacao", (req, res) => {
+//   const authHeader = req.headers["authorization"];
+//   const token = authHeader && authHeader.split(" ")[1];
+
+//   if (!token) return res.status(403).json({ error: "Não autorizado" });
+
+//   jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
+//     if (err) return res.status(403).json({ error: "Não autorizado" });
+
+//     res.json({ message: "Acesso autorizado", user });
+//   });
+// });
 
 // 🔹 Função helper para query
 function runQuery(sql, params = []) {
   return new Promise((resolve, reject) => {
     Firebird.attach(options, (err, db) => {
-      if (err) return reject(err)
+      if (err) return reject(err);
       db.query(sql, params, (err, result) => {
-        db.detach()
-        if (err) reject(err)
-        else resolve(result)
-      })
-    })
-  })
+        db.detach();
+        if (err) reject(err);
+        else resolve(result);
+      });
+    });
+  });
 }
 
 // 🔹 Teste de conexão
-app.get('/api/teste', (req, res) => {
+app.get("/api/teste", (req, res) => {
   Firebird.attach(options, (err, db) => {
     if (err) {
-      console.error('Erro ao conectar ao Firebird:', err)
-      return res.status(500).json({ erro: 'Falha na conexão' })
+      console.error("Erro ao conectar ao Firebird:", err);
+      return res.status(500).json({ erro: "Falha na conexão" });
     }
 
-    db.query('SELECT CURRENT_TIMESTAMP FROM RDB$DATABASE', (err, result) => {
-      db.detach()
+    db.query("SELECT CURRENT_TIMESTAMP FROM RDB$DATABASE", (err, result) => {
+      db.detach();
       if (err) {
-        console.error('Erro na consulta:', err)
-        return res.status(500).json({ erro: 'Erro na query' })
+        console.error("Erro na consulta:", err);
+        return res.status(500).json({ erro: "Erro na query" });
       }
-      res.json(result)
-    })
-  })
-})
+      res.json(result);
+    });
+  });
+});
 
 // GET - TABELAS AUXILIARES
 
-app.get('/api/tipocliente', async (req, res) => {
+app.get("/api/tipocliente", async (req, res) => {
   try {
     const rows = await runQuery(
-      'SELECT COD_TIPO, DES_TIPO FROM TIPO_CLIENTE ORDER BY COD_TIPO'
-    )
-    res.json(rows)
+      "SELECT COD_TIPO, DES_TIPO FROM TIPO_CLIENTE ORDER BY COD_TIPO",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/statuscliente', async (req, res) => {
+app.get("/api/statuscliente", async (req, res) => {
   try {
     const rows = await runQuery(
-      'SELECT COD_STA, DES_STA FROM STATUS_CLIENTE ORDER BY COD_STA'
-    )
-    res.json(rows)
+      "SELECT COD_STA, DES_STA FROM STATUS_CLIENTE ORDER BY COD_STA",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/assessor', async (req, res) => {
+app.get("/api/assessor", async (req, res) => {
   try {
     const rows = await runQuery(
-      'SELECT COD_ASS, DES_ASS FROM ASSESSOR_TB ORDER BY COD_ASS'
-    )
-    res.json(rows)
+      "SELECT COD_ASS, DES_ASS FROM ASSESSOR_TB ORDER BY COD_ASS",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/statusvistoria', async (req, res) => {
+app.get("/api/statusvistoria", async (req, res) => {
   try {
     const rows = await runQuery(
-      'SELECT COD_STA, DES_STA FROM STATUS_VISTORIA ORDER BY COD_STA'
-    )
-    res.json(rows)
+      "SELECT COD_STA, DES_STA FROM STATUS_VISTORIA ORDER BY COD_STA",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/empresa', async (req, res) => {
+app.get("/api/empresa", async (req, res) => {
   try {
     const rows = await runQuery(
-      'SELECT COD_EMP, RAZ_EMP FROM EMPRESA_TB ORDER BY COD_EMP'
-    )
-    res.json(rows)
+      "SELECT COD_EMP, RAZ_EMP FROM EMPRESA_TB ORDER BY COD_EMP",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/tiporeajuste', async (req, res) => {
+app.get("/api/tiporeajuste", async (req, res) => {
   try {
     const rows = await runQuery(
-      'SELECT COD_TIPO, DES_TIPO FROM TIPO_REAJUSTE ORDER BY COD_TIPO'
-    )
-    res.json(rows)
+      "SELECT COD_TIPO, DES_TIPO FROM TIPO_REAJUSTE ORDER BY COD_TIPO",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/replegal', async (req, res) => {
+app.get("/api/replegal", async (req, res) => {
   try {
     const rows = await runQuery(
-      'select COD_REP, FUNCAO, CPF, RG, EMPRESA, NOM_REP, COD_EMP FROM REPRESENTANTE_LEGAL'
-    )
-    res.json(rows)
+      "select COD_REP, FUNCAO, CPF, RG, EMPRESA, NOM_REP, COD_EMP FROM REPRESENTANTE_LEGAL",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/vistoriador', async (req, res) => {
+app.get("/api/vistoriador", async (req, res) => {
   try {
     const rows = await runQuery(
-      'SELECT COD_FUN, NOME_FUN, FUNCAO, CPF FROM VISTORIADORES'
-    )
-    res.json(rows)
+      "SELECT COD_FUN, NOME_FUN, FUNCAO, CPF FROM VISTORIADORES",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/clientes', async (req, res) => {
+app.get("/api/clientes", async (req, res) => {
   try {
     const rows = await runQuery(
-      'SELECT COD_CLI, CNPJ, RAZ_CLI, STATUS, TIPO_CLI, ANOTACOES, ASSESSOR FROM CLIENTES_TB'
-    )
-    res.json(rows)
+      "SELECT COD_CLI, CNPJ, RAZ_CLI, STATUS, TIPO_CLI, ANOTACOES, ASSESSOR FROM CLIENTES_TB",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/proposta', async (req, res) => {
+app.get("/api/proposta", async (req, res) => {
   try {
     const rows = await runQuery(
-      'select NRO_PRO, DATA_PRO, STATUS, EMP_PRO, LICITACAO, PLATAFORMA, TIPO_REAJUSTE, OBSERVACOES, REP_LEGAL, COD_VIS, NOME_FANTASIA, COD_CLI from PROPOSTA_TB'
-    )
-    res.json(rows)
+      "select NRO_PRO, DATA_PRO, STATUS, EMP_PRO, LICITACAO, PLATAFORMA, TIPO_REAJUSTE, OBSERVACOES, REP_LEGAL, COD_VIS, NOME_FANTASIA, COD_CLI from PROPOSTA_TB",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/objeto', async (req, res) => {
+app.get("/api/objeto", async (req, res) => {
   try {
     const rows = await runQuery(
-      'SELECT COD_OBJ, DES_OBJ FROM OBJETO_TB ORDER BY COD_OBJ'
-    )
-    res.json(rows)
+      "SELECT COD_OBJ, DES_OBJ FROM OBJETO_TB ORDER BY COD_OBJ",
+    );
+    res.json(rows);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ erro: 'Erro ao listar tipos' })
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao listar tipos" });
   }
-})
+});
 
-app.get('/api/proposta/:codigo', (req, res) => {
-  const { codigo } = req.params
+app.get("/api/proposta/:codigo", (req, res) => {
+  const { codigo } = req.params;
 
   Firebird.attach(options, (err, db) => {
-    if (err) return res.status(500).json({ error: err.message })
+    if (err) return res.status(500).json({ error: err.message });
 
     db.query(
-      'SELECT * FROM CONSULTA_PROPOSTA WHERE NROPRO = ?',
+      "SELECT * FROM CONSULTA_PROPOSTA WHERE NROPRO = ?",
       [codigo],
       (err, result) => {
-        db.detach()
-        if (err) return res.status(500).json({ error: err.message })
+        db.detach();
+        if (err) return res.status(500).json({ error: err.message });
 
         if (!result || result.length === 0) {
-          return res.status(404).json({ message: 'Proposta não encontrada' })
+          return res.status(404).json({ message: "Proposta não encontrada" });
         }
 
-        res.json(result[0])
-      }
-    )
-  })
-})
+        res.json(result[0]);
+      },
+    );
+  });
+});
 
-app.get('/api/propostaedit/:codigo', (req, res) => {
-  const { codigo } = req.params
+app.get("/api/propostaedit/:codigo", (req, res) => {
+  const { codigo } = req.params;
 
   Firebird.attach(options, (err, db) => {
-    if (err) return res.status(500).json({ error: err.message })
+    if (err) return res.status(500).json({ error: err.message });
 
     db.query(
-      'SELECT * FROM PROPOSTA_TB WHERE NRO_PRO = ?',
+      "SELECT * FROM PROPOSTA_TB WHERE NRO_PRO = ?",
       [codigo],
       (err, result) => {
-        db.detach()
-        if (err) return res.status(500).json({ error: err.message })
+        db.detach();
+        if (err) return res.status(500).json({ error: err.message });
 
         if (!result || result.length === 0) {
-          return res.status(404).json({ message: 'Proposta não encontrada' })
+          return res.status(404).json({ message: "Proposta não encontrada" });
         }
 
-        res.json(result[0])
-      }
-    )
-  })
-})
+        res.json(result[0]);
+      },
+    );
+  });
+});
 
 // POST - CADASTROS
-app.post('/api/clientes', (req, res) => {
+app.post("/api/clientes", (req, res) => {
   const { cnpj, razaoSocial, status, tipoCliente, anotacoes, assessor } =
-    req.body
+    req.body;
 
   Firebird.attach(options, (err, db) => {
-    if (err) return res.status(500).json({ erro: 'Falha na conexão' })
+    if (err) return res.status(500).json({ erro: "Falha na conexão" });
 
     const sql = `
       INSERT INTO CLIENTES_TB (CNPJ, RAZ_CLI, STATUS, TIPO_CLI, ANOTACOES, ASSESSOR)
       VALUES (?, ?, ?, ?, ?, ?)
-    `
+    `;
     db.query(
       sql,
       [cnpj, razaoSocial, status, tipoCliente, anotacoes, assessor],
-      err => {
-        db.detach()
+      (err) => {
+        db.detach();
         if (err) {
-          console.error('Erro ao inserir:', err)
-          return res.status(500).json({ erro: 'Erro ao inserir cliente' })
+          console.error("Erro ao inserir:", err);
+          return res.status(500).json({ erro: "Erro ao inserir cliente" });
         }
-        res.json({ sucesso: true })
-      }
-    )
-  })
-})
+        res.json({ sucesso: true });
+      },
+    );
+  });
+});
 
-app.post('/api/cadastroramo', (req, res) => {
-  const { descRamo } = req.body
+app.post("/api/cadastroramo", (req, res) => {
+  const { descRamo } = req.body;
 
   Firebird.attach(options, (err, db) => {
-    if (err) return res.status(500).json({ erro: 'Falha na conexão' })
+    if (err) return res.status(500).json({ erro: "Falha na conexão" });
 
     const sql = `
       INSERT INTO RAMO_ATIVIDADE (DES_ATIV)
       VALUES (?)
-    `
-    db.query(sql, [descRamo], err => {
-      db.detach()
+    `;
+    db.query(sql, [descRamo], (err) => {
+      db.detach();
       if (err) {
-        console.error('Erro ao inserir:', err)
-        return res.status(500).json({ erro: 'Erro ao inserir cliente' })
+        console.error("Erro ao inserir:", err);
+        return res.status(500).json({ erro: "Erro ao inserir cliente" });
       }
-      res.json({ sucesso: true })
-    })
-  })
-})
+      res.json({ sucesso: true });
+    });
+  });
+});
 
-app.post('/api/enviarproposta', (req, res) => {
-  const {
-    dataProposta,
-    statusProposta,
-    empresa,
-    licitacao,
-    plataforma,
-    tipoReajuste,
-    observacoes,
-    repLegal,
-    nomeFantasia,
-    codCliente,
-    objeto,
-    prestadorAtual,
-    assessor
-  } = req.body
-
-  Firebird.attach(options, (err, db) => {
-    if (err) return res.status(500).json({ erro: 'Falha na conexão' })
-
-    const sql = `INSERT INTO PROPOSTA_TB (DATA_PRO, STATUS, EMP_PRO, LICITACAO, PLATAFORMA, 
-                                          TIPO_REAJUSTE, OBSERVACOES, REP_LEGAL, NOME_FANTASIA, 
-                                          COD_CLI, OBJETO, PRESTADOR_ATUAL, ASSESSOR)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
-    `
-    db.query(
-      sql,
-      [
-        dataProposta,
-        statusProposta,
-        empresa,
-        licitacao,
-        plataforma,
-        tipoReajuste,
-        observacoes,
-        repLegal,
-        nomeFantasia,
-        codCliente,
-        objeto,
-        prestadorAtual,
-        assessor
-      ],
-      err => {
-        db.detach()
-        if (err) {
-          console.error('Erro ao inserir:', err)
-          return res.status(500).json({ erro: 'Erro ao inserir cliente' })
-        }
-        res.json({ sucesso: true })
-      }
-    )
-  })
-})
-
-app.post('/api/editarproposta', (req, res) => {
+app.post("/api/enviarproposta", (req, res) => {
   const {
     dataProposta,
     statusProposta,
@@ -376,18 +366,16 @@ app.post('/api/editarproposta', (req, res) => {
     objeto,
     prestadorAtual,
     assessor,
-    nroPro
-  } = req.body
+  } = req.body;
 
   Firebird.attach(options, (err, db) => {
-    if (err) return res.status(500).json({ erro: 'Falha na conexão' })
+    if (err) return res.status(500).json({ erro: "Falha na conexão" });
 
-    const sql = `UPDATE PROPOSTA_TB 
-                 SET DATA_PRO = ?, STATUS = ?, EMP_PRO = ?, LICITACAO = ?, PLATAFORMA = ?, 
-                     TIPO_REAJUSTE = ?, OBSERVACOES = ?, REP_LEGAL = ?, NOME_FANTASIA = ?, 
-                     COD_CLI = ?, OBJETO = ?, PRESTADOR_ATUAL = ?, ASSESSOR = ?
-                 WHERE NRO_PRO = ?
-    `
+    const sql = `INSERT INTO PROPOSTA_TB (DATA_PRO, STATUS, EMP_PRO, LICITACAO, PLATAFORMA, 
+                                          TIPO_REAJUSTE, OBSERVACOES, REP_LEGAL, NOME_FANTASIA, 
+                                          COD_CLI, OBJETO, PRESTADOR_ATUAL, ASSESSOR)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
+    `;
     db.query(
       sql,
       [
@@ -404,21 +392,77 @@ app.post('/api/editarproposta', (req, res) => {
         objeto,
         prestadorAtual,
         assessor,
-        nroPro
       ],
-      err => {
-        db.detach()
+      (err) => {
+        db.detach();
         if (err) {
-          console.error('Erro ao inserir:', err)
-          return res.status(500).json({ erro: 'Erro ao salvar proposta' })
+          console.error("Erro ao inserir:", err);
+          return res.status(500).json({ erro: "Erro ao inserir cliente" });
         }
-        res.json({ sucesso: true })
-      }
-    )
-  })
-})
+        res.json({ sucesso: true });
+      },
+    );
+  });
+});
 
-app.post('/api/enviarorcamento', (req, res) => {
+app.post("/api/editarproposta", (req, res) => {
+  const {
+    dataProposta,
+    statusProposta,
+    empresa,
+    licitacao,
+    plataforma,
+    tipoReajuste,
+    observacoes,
+    repLegal,
+    nomeFantasia,
+    codCliente,
+    objeto,
+    prestadorAtual,
+    assessor,
+    nroPro,
+  } = req.body;
+
+  Firebird.attach(options, (err, db) => {
+    if (err) return res.status(500).json({ erro: "Falha na conexão" });
+
+    const sql = `UPDATE PROPOSTA_TB 
+                 SET DATA_PRO = ?, STATUS = ?, EMP_PRO = ?, LICITACAO = ?, PLATAFORMA = ?, 
+                     TIPO_REAJUSTE = ?, OBSERVACOES = ?, REP_LEGAL = ?, NOME_FANTASIA = ?, 
+                     COD_CLI = ?, OBJETO = ?, PRESTADOR_ATUAL = ?, ASSESSOR = ?
+                 WHERE NRO_PRO = ?
+    `;
+    db.query(
+      sql,
+      [
+        dataProposta,
+        statusProposta,
+        empresa,
+        licitacao,
+        plataforma,
+        tipoReajuste,
+        observacoes,
+        repLegal,
+        nomeFantasia,
+        codCliente,
+        objeto,
+        prestadorAtual,
+        assessor,
+        nroPro,
+      ],
+      (err) => {
+        db.detach();
+        if (err) {
+          console.error("Erro ao inserir:", err);
+          return res.status(500).json({ erro: "Erro ao salvar proposta" });
+        }
+        res.json({ sucesso: true });
+      },
+    );
+  });
+});
+
+app.post("/api/enviarorcamento", (req, res) => {
   const {
     nroPro,
     dataFinal,
@@ -433,18 +477,18 @@ app.post('/api/enviarorcamento', (req, res) => {
     empVencedor,
     colocacao,
     codContrato,
-    observacoes
-  } = req.body
+    observacoes,
+  } = req.body;
 
   Firebird.attach(options, (err, db) => {
-    if (err) return res.status(500).json({ erro: 'Falha na conexão' })
+    if (err) return res.status(500).json({ erro: "Falha na conexão" });
 
     const sql = `INSERT INTO DADOS_ORCAMENTARIOS (NRO_PRO, DATA_FINAL_VIST, QTDE_QUADRO, VIGENCIA,
                                                  VALOR_ORCAMENTO, CCT, VALOR_APRESENTADO, LUCRO,
                                                  VALOR_VENCEDOR, EMP_VENCEDORA, COLOCACAO, COD_CONTRATO,
                                                  OBSERVACOES, COD_VIST)
                  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);
-    `
+    `;
     db.query(
       sql,
       [
@@ -461,26 +505,26 @@ app.post('/api/enviarorcamento', (req, res) => {
         empVencedor,
         colocacao,
         codContrato,
-        observacoes
+        observacoes,
       ],
-      err => {
-        db.detach()
+      (err) => {
+        db.detach();
         if (err) {
-          console.error('Erro ao inserir:', err)
-          return res.status(500).json({ erro: 'Erro ao inserir cliente' })
+          console.error("Erro ao inserir:", err);
+          return res.status(500).json({ erro: "Erro ao inserir cliente" });
         }
-        res.json({ sucesso: true })
-      }
-    )
-  })
-})
+        res.json({ sucesso: true });
+      },
+    );
+  });
+});
 
 // ======================================== GERADOR DE RELATORIO ========================================
 
-app.post('/api/relatorio', (req, res) => {
+app.post("/api/relatorio", (req, res) => {
   // Helper para formatar data em pt-BR
 
-  const data = req.body || {}
+  const data = req.body || {};
 
   // exemplo de dados esperados (substitua pelo seu payload)
   const payload = {
@@ -493,94 +537,96 @@ app.post('/api/relatorio', (req, res) => {
     corpo: data.corpo,
     assinante: {
       nome: data.repLegal,
-      cargo: data.repFunc
-    }
-  }
+      cargo: data.repFunc,
+    },
+  };
 
-  const doc = new PDFDocument({ margin: 50, size: 'A4' })
+  const doc = new PDFDocument({ margin: 50, size: "A4" });
 
-  res.setHeader('Content-Type', 'application/pdf')
+  res.setHeader("Content-Type", "application/pdf");
   res.setHeader(
-    'Content-Disposition',
-    `inline; filename=carta-credenciamento.pdf`
-  )
+    "Content-Disposition",
+    `inline; filename=carta-credenciamento.pdf`,
+  );
 
-  doc.pipe(res)
+  doc.pipe(res);
 
   // nro proposta
-  doc.font('Helvetica').fontSize(6).text(payload.proposta)
-  doc.moveDown(0.5)
+  doc.font("Helvetica").fontSize(6).text(payload.proposta);
+  doc.moveDown(0.5);
 
   // Cabeçalho simples (logo opcional)
   // if (logoPath) doc.image(logoPath, doc.x, doc.y, { width: 100 });
   doc
-    .font('Helvetica-Bold')
+    .font("Helvetica-Bold")
     .fontSize(16)
-    .text(payload.titulo, { align: 'center' })
-  doc.moveDown(1)
+    .text(payload.titulo, { align: "center" });
+  doc.moveDown(1);
 
   // Cidade e data
   doc
-    .font('Helvetica')
+    .font("Helvetica")
     .fontSize(11)
     .text(`${payload.cidade}, ${formatDateCredencial(payload.data)}`, {
-      align: 'right'
-    })
-  doc.moveDown(1)
+      align: "right",
+    });
+  doc.moveDown(1);
 
   // Destinatário
-  doc.font('Helvetica-Bold').fontSize(12).text(payload.destinatario)
-  doc.moveDown(0.5)
+  doc.font("Helvetica-Bold").fontSize(12).text(payload.destinatario);
+  doc.moveDown(0.5);
 
   // Corpo (array de parágrafos)
-  doc.font('Helvetica').fontSize(12)
-  payload.corpo.forEach(paragrafo => {
-    doc.text(paragrafo, { align: 'justify', paragraphGap: 6 })
-    doc.moveDown(0.5)
-  })
+  doc.font("Helvetica").fontSize(12);
+  payload.corpo.forEach((paragrafo) => {
+    doc.text(paragrafo, { align: "justify", paragraphGap: 6 });
+    doc.moveDown(0.5);
+  });
 
-  doc.moveDown(1)
+  doc.moveDown(1);
 
-  doc.moveDown(2)
+  doc.moveDown(2);
 
   // Bloco de assinatura
   // const signatureX = doc.x;
-  const sigWidth = 250
-  doc.moveDown(2)
-  doc.text('Atenciosamente,', { continued: false })
-  doc.moveDown(4)
+  const sigWidth = 250;
+  doc.moveDown(2);
+  doc.text("Atenciosamente,", { continued: false });
+  doc.moveDown(4);
 
   // Linha para assinatura
-  const currX = doc.x
-  const sigY = doc.y
+  const currX = doc.x;
+  const sigY = doc.y;
   doc
     .moveTo(currX, sigY + 40)
     .lineTo(currX + sigWidth, sigY + 40)
-    .stroke()
+    .stroke();
   doc.text(payload.assinante.nome, currX, sigY + 45, {
     width: sigWidth,
-    align: 'left'
-  })
+    align: "left",
+  });
   doc.text(payload.assinante.cargo, currX, sigY + 60, {
     width: sigWidth,
-    align: 'left'
-  })
+    align: "left",
+  });
 
   // Rodapé opcional
-  doc.fontSize(9).fillColor('gray')
+  doc.fontSize(9).fillColor("gray");
   doc.text(
     `Documento gerado por ${payload.empresa}`,
     doc.page.margins.left,
     doc.page.height - doc.page.margins.bottom - 30,
     {
-      align: 'center',
-      width: doc.page.width - doc.page.margins.left - doc.page.margins.right
-    }
-  )
+      align: "center",
+      width: doc.page.width - doc.page.margins.left - doc.page.margins.right,
+    },
+  );
 
-  doc.end()
-})
+  doc.end();
+});
 
 // ======================================== INICIANDO SERVER ========================================
 
-app.listen(port, ip, () => console.log(`🔥 Servidor rodando na porta :${port}`))
+app.listen(port, ip, () =>
+  console.log(`🔥 Servidor rodando na porta :${port}`),
+);
